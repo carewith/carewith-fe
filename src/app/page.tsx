@@ -1,3 +1,11 @@
+import Banner from "@/components/mainpage/Banner";
+import Content from "@/components/mainpage/Content";
+
 export default function Home() {
-  return <h3>CAREWITH</h3>;
+  return (
+    <div>
+      <Banner />
+      <Content />
+    </div>
+  );
 }
