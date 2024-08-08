@@ -5,10 +5,10 @@ import MediblockCard from "./MediblockCard";
 const ContentContainer = styled.div`
   width: 100%;
   position: absolute;
-  top: 280px;
+  top: 325px;
   left: 0;
   max-width: ${({ theme }) => theme.layout.maxWidth};
-  height: calc(100vh - 300px);
+  height: calc(100vh - 350px);
   background-color: #fbfcff;
   border-top-left-radius: 32px;
   border-top-right-radius: 32px;

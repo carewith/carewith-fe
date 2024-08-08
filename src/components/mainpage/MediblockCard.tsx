@@ -51,7 +51,7 @@ const Time = styled.p<{ taken: boolean; scheduled: boolean }>`
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 0.25rem; /* 아이콘과 텍스트 간의 간격 */
+  gap: 0.25rem;
 `;
 
 const Status = styled.p<{ taken: boolean; scheduled: boolean }>`
