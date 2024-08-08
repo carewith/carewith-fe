@@ -120,6 +120,7 @@ const InfoSectionRow = styled.div`
     background-color: ${({ theme }) => theme.colors.grey.background};
     border-radius: 14px;
     cursor: pointer;
+    transition: background-color 0.3s;
   }
 
   .toggle-switch::before {
@@ -131,7 +132,7 @@ const InfoSectionRow = styled.div`
     height: 12px;
     background-color: white;
     border-radius: 50%;
-    transition: 0.3s;
+    transition: transform 0.3s;
   }
 
   input[type="checkbox"]:checked + .toggle-switch::before {
@@ -139,7 +140,7 @@ const InfoSectionRow = styled.div`
   }
 
   input[type="checkbox"]:checked + .toggle-switch {
-    background-color: ${({ theme }) => theme.colors.primary.blue};
+    background-color: ${({ theme }) => theme.colors.primary.blue01};
   }
 `;
 
@@ -201,10 +202,8 @@ const MedicineEditDetail: React.FC<MedicineData> = ({
     });
 
     if (response.ok) {
-      // 저장 성공 시 다른 페이지로 이동하거나, 사용자에게 알림
       console.log("저장 성공");
     } else {
-      // 저장 실패 시 사용자에게 알림
       console.log("저장 실패");
     }
   };
@@ -276,12 +275,10 @@ const MedicineEditDetail: React.FC<MedicineData> = ({
         </InfoSectionRow>
         <InfoSectionRow>
           <span>반복알림</span>
-          <span>
-            <input
-              type="checkbox"
-              checked={editData.repeatAlarm}
-              onChange={(e) => handleChange("repeatAlarm", e.target.checked)}
-            />
+          <span
+            onClick={() => handleChange("repeatAlarm", !editData.repeatAlarm)}
+          >
+            <input type="checkbox" checked={editData.repeatAlarm} readOnly />
             <div className="toggle-switch"></div>
           </span>
         </InfoSectionRow>
@@ -296,12 +293,10 @@ const MedicineEditDetail: React.FC<MedicineData> = ({
       <InfoSection>
         <InfoSectionRow>
           <span>자동 연장</span>
-          <span>
-            <input
-              type="checkbox"
-              checked={editData.autoExtend}
-              onChange={(e) => handleChange("autoExtend", e.target.checked)}
-            />
+          <span
+            onClick={() => handleChange("autoExtend", !editData.autoExtend)}
+          >
+            <input type="checkbox" checked={editData.autoExtend} readOnly />
             <div className="toggle-switch"></div>
           </span>
         </InfoSectionRow>
