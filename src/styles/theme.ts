@@ -15,6 +15,7 @@ const theme :DefaultTheme = {
       grey01: "#454761",
       grey02: "#808AAB",
       grey03: "#CAD0E3",
+      background:"#F4F5F9"
     },
     text: {
       text01: "#201F22",
@@ -27,6 +28,7 @@ const theme :DefaultTheme = {
       bold: "#E14143",
       light01: "#FF7C7E",
       light02: "#FFB8B9",
+      background:"#FFDFDF"
     },
     green: {
       green: "#04C75B",

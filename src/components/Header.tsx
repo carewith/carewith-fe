@@ -10,6 +10,7 @@ const HeaderContainer = styled.header`
   width: 100%;
   max-width: ${({ theme }) => theme.layout.maxWidth};
   height: 60px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
