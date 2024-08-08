@@ -36,6 +36,7 @@ const Content = () => {
       <CardContainer>
         {/* NOTE DATA 요청 후 변경 */}
         <MediblockCard
+          id={0}
           image="/images/mediblock.png"
           time="오후 7:00"
           medicineName="아리셉트 정 5mg"
@@ -43,6 +44,7 @@ const Content = () => {
           scheduled={false}
         />
         <MediblockCard
+          id={1}
           image="/images/mediblock.png"
           time="오후 10:00"
           medicineName="아리셉트 정 5mg"
@@ -50,6 +52,7 @@ const Content = () => {
           scheduled={true}
         />
         <MediblockCard
+          id={2}
           image="/images/mediblock.png"
           time="오후 10:00"
           medicineName="아리셉트 정 5mg"
@@ -57,6 +60,7 @@ const Content = () => {
           scheduled={true}
         />
         <MediblockCard
+          id={3}
           image="/images/mediblock.png"
           time="오후 10:00"
           medicineName="아리셉트 정 5mg"
@@ -64,6 +68,7 @@ const Content = () => {
           scheduled={true}
         />
         <MediblockCard
+          id={4}
           image="/images/mediblock.png"
           time="오후 10:00"
           medicineName="아리셉트 정 5mg"
@@ -71,6 +76,7 @@ const Content = () => {
           scheduled={true}
         />
         <MediblockCard
+          id={5}
           image="/images/mediblock.png"
           time="내일 오전 9:00"
           medicineName="아리셉트 정 5mg"

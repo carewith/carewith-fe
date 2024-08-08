@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "name": "가스디알정50밀리그람(디메크로틴산마그네슘)",
+    "classification": "기타의 소화기관용약",
+    "division": "전문의약품",
+    "imageUrl": "/images/mediblock.png",
+    "dosage": 1.0,
+    "dailyFrequency": 3,
+    "totalDoses": 7,
+    "remainingPills": 12,
+    "times": ["오전 9:00", "오후 1:00", "오후 7:00"],
+    "startDate": "2024년 8월 7일",
+    "repeatAlarm": true,
+    "alarmSound": "보호자 음성",
+    "autoExtend": false,
+    "memo": "식사 후 복용하세요. 복용 후 소화불량이 발생할 수 있으니 주의 바랍니다."
+  },
+  {
+    "id": 2,
+    "name": "약물 이름 예시",
+    "classification": "분류 예시",
+    "division": "구분 예시",
+    "imageUrl": "/images/example.png",
+    "dosage": 0.5,
+    "dailyFrequency": 2,
+    "totalDoses": 10,
+    "remainingPills": 5,
+    "times": ["오전 10:00", "오후 2:00"],
+    "startDate": "2024년 8월 8일",
+    "repeatAlarm": false,
+    "alarmSound": "기본 알림음",
+    "autoExtend": true,
+    "memo": "매 복용 시 충분한 물과 함께 복용하세요. 복용 시간을 엄수하세요."
+  }
+]
