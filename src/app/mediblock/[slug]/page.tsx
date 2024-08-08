@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Detail information about the medicine",
 };
 
-interface MedicineData {
+export interface MedicineData {
   id: number;
   name: string;
   classification: string;

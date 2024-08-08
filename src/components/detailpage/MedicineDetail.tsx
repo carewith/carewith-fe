@@ -1,23 +1,6 @@
 "use client";
+import { MedicineData } from "@/app/mediblock/[slug]/page";
 import styled from "styled-components";
-
-interface MedicineDetailProps {
-  id: number;
-  name: string;
-  classification: string;
-  division: string;
-  imageUrl: string;
-  dosage: number;
-  dailyFrequency: number;
-  totalDoses: number;
-  remainingPills: number;
-  times: string[];
-  startDate: string;
-  repeatAlarm: boolean;
-  alarmSound: string;
-  autoExtend: boolean;
-  memo: string;
-}
 
 const MedicineDetailContainer = styled.div`
   width: 100%;
@@ -125,7 +108,7 @@ const InfoSectionRow = styled.div`
   }
 `;
 
-const MedicineDetail: React.FC<MedicineDetailProps> = ({
+const MedicineDetail: React.FC<MedicineData> = ({
   id,
   name,
   classification,
