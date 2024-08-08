@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import { FaChevronRight } from "react-icons/fa";
-import { FaRegClock } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { FaChevronRight, FaRegClock } from "react-icons/fa";
+
 interface MediblockCardProps {
+  id: number;
   time: string;
   medicineName: string;
   image: string;
@@ -76,17 +78,24 @@ const Status = styled.p<{ taken: boolean; scheduled: boolean }>`
 `;
 
 const MediblockCard: React.FC<MediblockCardProps> = ({
+  id,
   time,
   medicineName,
   image,
   taken,
   scheduled,
 }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/mediblock/${id}`);
+  };
+
   return (
     <Card taken={taken} scheduled={scheduled}>
       <ImageContainer>
         <Image src={image} alt={medicineName} />
-        <FaChevronRight color="#ddd" />
+        <FaChevronRight color="#ddd" onClick={handleClick} />
       </ImageContainer>
       <Title>{medicineName}</Title>
       <Time taken={taken} scheduled={scheduled}>

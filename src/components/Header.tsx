@@ -21,11 +21,11 @@ const HeaderContainer = styled.header`
 const LogoContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 12px;
 `;
 
 const Logo = styled.div`
-  font-size: 1.5rem;
+  font-size: 26px;
   font-weight: bold;
 `;
 
