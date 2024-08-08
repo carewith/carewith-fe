@@ -24,6 +24,9 @@
     padding: 0;
 }
 html,body {
+    position: relative;
     font-family: 'Nanum Barun Gothic', sans-serif;
+    max-width: 768px;
+    margin: 0 auto;
     height: 100%;
 }
