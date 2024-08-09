@@ -17,6 +17,7 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 const HeaderContainer = styled.header`
   width: 100%;
   max-width: ${({ theme }) => theme.layout.maxWidth};
+  background-color: transparent;
   height: 60px;
   margin: 0 auto;
   display: flex;
@@ -132,6 +133,14 @@ const Header = () => {
       router.push(`/mediblock/${slug}/edit`);
     }
   };
+
+  // Check if the current route is /login or /signup
+  const isAuthPage = pathname === "/login" || pathname === "/signup";
+
+  // If it is an auth page, return null to hide the header
+  if (isAuthPage) {
+    return null;
+  }
 
   return (
     <>
