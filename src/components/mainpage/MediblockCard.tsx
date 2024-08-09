@@ -11,7 +11,7 @@ interface MediblockCardProps {
   scheduled: boolean;
 }
 
-const Card = styled.div<{ taken: boolean; scheduled: boolean }>`
+const Card = styled.div`
   background-color: #fff;
   border-radius: 20px;
   box-shadow: 0 6px 8px rgba(197, 204, 229, 0.12);
@@ -92,7 +92,7 @@ const MediblockCard: React.FC<MediblockCardProps> = ({
   };
 
   return (
-    <Card taken={taken} scheduled={scheduled}>
+    <Card>
       <ImageContainer>
         <Image src={image} alt={medicineName} />
         <FaChevronRight color="#ddd" onClick={handleClick} />

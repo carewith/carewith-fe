@@ -3,7 +3,7 @@
 import { MedicineData } from "@/app/mediblock/[slug]/page";
 import { useState } from "react";
 import styled from "styled-components";
-import { FaChevronRight } from "react-icons/fa"; // Import right arrow icon
+import { FaChevronRight } from "react-icons/fa";
 
 const MedicineEditDetailContainer = styled.div`
   width: 100%;
