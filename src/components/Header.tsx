@@ -2,10 +2,10 @@
 
 import styled from "styled-components";
 import { useState } from "react";
+import { FaChevronLeft } from "react-icons/fa6";
 import { usePathname, useRouter } from "next/navigation";
 import {
   FaRegCheckCircle,
-  FaArrowLeft,
   FaRegBell,
   FaRegUserCircle,
   FaRegTrashAlt,
@@ -63,7 +63,7 @@ const Modal = styled.div`
   border-radius: 24px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 95%;
-  max-width: 400px;
+  max-width: 768px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -133,11 +133,8 @@ const Header = () => {
       router.push(`/mediblock/${slug}/edit`);
     }
   };
-
-  // Check if the current route is /login or /signup
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
-  // If it is an auth page, return null to hide the header
   if (isAuthPage) {
     return null;
   }
@@ -149,7 +146,7 @@ const Header = () => {
           {isHomePage || isMediblock ? (
             <RxHamburgerMenu size={24} />
           ) : (
-            <FaArrowLeft size={24} onClick={() => router.back()} />
+            <FaChevronLeft size={24} onClick={() => router.back()} />
           )}
           <Logo>LOGO</Logo>
         </LogoContainer>

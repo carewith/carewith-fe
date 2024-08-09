@@ -23,6 +23,10 @@
     margin: 0;
     padding: 0;
 }
+a {
+  color: inherit; 
+  text-decoration: none; 
+}
 html,body {
     position: relative;
     font-family: 'Nanum Barun Gothic', sans-serif;
