@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { FaPlus, FaCamera } from "react-icons/fa6";
 import { IoSearch } from "react-icons/io5";
+import Link from "next/link";
 
 const AddButtonContainer = styled.button`
   background-color: ${({ theme }) => theme.colors.primary.blue02};
@@ -45,7 +46,7 @@ const Modal = styled.div`
   border-radius: 24px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   width: 95%;
-  max-width: 400px;
+  max-width: 768px;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -123,9 +124,11 @@ const AddButton = () => {
               건강을 지키는 작은 습관, 건강을 지키는 작은 습관
             </ModalDescription>
             <ModalButtonGroup>
-              <ModalButton>
-                <IoSearch size={20} /> 직접 등록
-              </ModalButton>
+              <Link href="/register/search" passHref legacyBehavior>
+                <ModalButton as="a">
+                  <IoSearch size={20} /> 직접 등록
+                </ModalButton>
+              </Link>
               <ModalButton>
                 <FaCamera size={20} /> 처방전 스캔
               </ModalButton>
