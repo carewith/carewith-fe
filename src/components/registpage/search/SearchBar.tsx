@@ -1,18 +1,22 @@
-"use client";
 import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { IoSearch } from "react-icons/io5";
+import { IoSearch, IoClose } from "react-icons/io5"; // 'X' 아이콘 추가
 import { useDrugStore, useSearchStore } from "@/store/drugStore";
 
 type AutocompleteResult = string;
 
-const SearchBar = () => {
-  const [inputValue, setInputValue] = useState<string>("");
+type SearchBarProps = {
+  initialValue?: string;
+  onSearch?: (keyword: string) => void;
+};
+
+const SearchBar = ({ initialValue = "", onSearch }: SearchBarProps) => {
+  const [inputValue, setInputValue] = useState<string>(initialValue);
   const [suggestions, setSuggestions] = useState<AutocompleteResult[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchBarRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null); // input 필드 참조 생성
-  const { setKeyword } = useSearchStore();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { setKeyword, clearKeyword } = useSearchStore();
   const { searchDrugs } = useDrugStore();
 
   useEffect(() => {
@@ -44,7 +48,9 @@ const SearchBar = () => {
   const handleSuggestionClick = (suggestion: AutocompleteResult) => {
     setKeyword(suggestion);
     searchDrugs(suggestion);
-
+    if (onSearch) {
+      onSearch(suggestion);
+    }
     if (inputRef.current) {
       inputRef.current.blur();
     }
@@ -58,6 +64,14 @@ const SearchBar = () => {
     ) {
       setShowSuggestions(false);
     }
+  };
+
+  const clearInput = () => {
+    setInputValue("");
+    clearKeyword();
+    setSuggestions([]);
+    setShowSuggestions(false);
+    inputRef.current?.focus();
   };
 
   useEffect(() => {
@@ -93,6 +107,11 @@ const SearchBar = () => {
           onChange={handleInputChange}
           onFocus={() => setShowSuggestions(true)}
         />
+        {inputValue && (
+          <ClearIcon onClick={clearInput}>
+            <IoClose size={20} color="#35373e" />
+          </ClearIcon>
+        )}
       </SearchBarContainer>
       {showSuggestions && suggestions.length > 0 && (
         <SuggestionsContainer>
@@ -112,6 +131,7 @@ const SearchBar = () => {
 
 export default SearchBar;
 
+// Styled Components (동일)
 const SearchBarWrapper = styled.div`
   position: relative;
 `;
@@ -124,6 +144,7 @@ const SearchBarContainer = styled.div`
   border-radius: 0.75rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
+  position: relative;
 `;
 
 const SearchInput = styled.input`
@@ -132,6 +153,12 @@ const SearchInput = styled.input`
   background: none;
   font-size: 16px;
   color: ${({ theme }) => theme.colors.grey.grey01};
+`;
+
+const ClearIcon = styled.div`
+  cursor: pointer;
+  position: absolute;
+  right: 10px; /* 'X' 아이콘의 위치를 조정 */
 `;
 
 const SuggestionsContainer = styled.ul`
@@ -143,7 +170,7 @@ const SuggestionsContainer = styled.ul`
   border-radius: 0.75rem;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  max-height: 200px;
+  max-height: 400px;
   overflow-y: auto;
   padding: 0.5rem 0;
   margin: 0;
