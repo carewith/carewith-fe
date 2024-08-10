@@ -5,6 +5,7 @@ import AddedMedicines from "@/components/registpage/search/AddedMedicines";
 import SearchResults from "@/components/registpage/search/SearchResults";
 import SearchBar from "@/components/registpage/search/SearchBar";
 import NextButton from "@/components/registpage/search/NextButton";
+import { useDrugStore } from "@/store/drugStore";
 
 type Medicine = {
   id: number;
@@ -12,67 +13,9 @@ type Medicine = {
   description: string;
   imageUrl: string;
 };
-
 const SearchRegisterPage = () => {
-  //FIXME - USESTATE 대신 데이터 요청으로 변경 예정
-  const [addedMedicines, setAddedMedicines] = useState<Medicine[]>([
-    {
-      id: 1,
-      name: "아리셉트 정 5mg",
-      description: "도네페질염산염으로서 1일 1회 5mg씩 취침전 투여한다.",
-      imageUrl: "/images/mediblock.png",
-    },
-    {
-      id: 2,
-      name: "아리셉트 정 10mg",
-      description: "도네페질염산염으로서 1일 1회 10mg씩 취침전 투여한다.",
-      imageUrl: "/images/mediblock.png",
-    },
-    {
-      id: 3,
-      name: "네오마켓 정 5mg",
-      description: "도네페질염산염으로서 1일 1회 5mg씩 취침전 투여한다.",
-      imageUrl: "/images/mediblock.png",
-    },
-  ]);
-  const [searchResults, setSearchResults] = useState<Medicine[]>([
-    {
-      id: 1,
-      name: "아리셉트 정 5mg",
-      description: "도네페질염산염으로서 1일 1회 5mg씩 취침전 투여한다.",
-      imageUrl: "/images/mediblock.png",
-    },
-    {
-      id: 2,
-      name: "아리셉트 정 10mg",
-      description: "도네페질염산염으로서 1일 1회 10mg씩 취침전 투여한다.",
-      imageUrl: "/images/mediblock.png",
-    },
-    {
-      id: 3,
-      name: "네오마켓 정 5mg",
-      description: "도네페질염산염으로서 1일 1회 5mg씩 취침전 투여한다.",
-      imageUrl: "/images/mediblock.png",
-    },
-    {
-      id: 4,
-      name: "네오마켓 정 5mg",
-      description: "도네페질염산염으로서 1일 1회 5mg씩 취침전 투여한다.",
-      imageUrl: "/images/mediblock.png",
-    },
-    {
-      id: 5,
-      name: "네오마켓 정 5mg",
-      description: "도네페질염산염으로서 1일 1회 5mg씩 취침전 투여한다.",
-      imageUrl: "/images/mediblock.png",
-    },
-    {
-      id: 6,
-      name: "네오마켓 정 5mg",
-      description: "도네페질염산염으로서 1일 1회 5mg씩 취침전 투여한다.",
-      imageUrl: "/images/mediblock.png",
-    },
-  ]);
+  const { drugs, loading, error } = useDrugStore();
+  const [addedMedicines, setAddedMedicines] = useState<Medicine[]>([]);
 
   const handleAddMedicine = (medicine: Medicine) => {
     if (!addedMedicines.find((m) => m.id === medicine.id)) {
@@ -88,12 +31,16 @@ const SearchRegisterPage = () => {
     <Container>
       <SearchBar />
       <SectionTitle>검색 결과</SectionTitle>
-      <SearchResults
-        searchResults={searchResults}
-        addedMedicines={addedMedicines}
-        onAdd={handleAddMedicine}
-        onRemove={handleRemoveMedicine}
-      />
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      {!loading && !error && (
+        <SearchResults
+          searchResults={drugs}
+          addedMedicines={addedMedicines}
+          onAdd={handleAddMedicine}
+          onRemove={handleRemoveMedicine}
+        />
+      )}
       <SectionTitle>추가된 약</SectionTitle>
       <AddedMedicines
         addedMedicines={addedMedicines}
