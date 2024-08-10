@@ -43,9 +43,12 @@ export const useDrugStore = create<DrugStore>((set) => ({
 type SearchState = {
   keyword: string;
   setKeyword: (keyword: string) => void;
+  clearKeyword: () => void; 
+
 };
 
 export const useSearchStore = create<SearchState>((set) => ({
   keyword: "",
   setKeyword: (keyword: string) => set({ keyword }),
+  clearKeyword: () => set({ keyword: "" })
 }));
