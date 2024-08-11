@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useSearchStore } from "@/store/drugStore";
 import SearchBar from "@/components/registpage/search/SearchBar";
-import { Container } from "../add/page";
+import { Container } from "@/components/registpage/add/RegisterAddPage.styles";
 
 const SearchPage = () => {
   const router = useRouter();
