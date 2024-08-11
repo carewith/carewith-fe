@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { IoSearch, IoClose } from "react-icons/io5"; // 'X' 아이콘 추가
+import { IoSearch, IoClose } from "react-icons/io5";
 import { useDrugStore, useSearchStore } from "@/store/drugStore";
+import debounce from "lodash.debounce";
 
 type AutocompleteResult = string;
 
@@ -19,26 +20,34 @@ const SearchBar = ({ initialValue = "", onSearch }: SearchBarProps) => {
   const { setKeyword, clearKeyword } = useSearchStore();
   const { searchDrugs } = useDrugStore();
 
-  useEffect(() => {
-    if (inputValue) {
-      const fetchSuggestions = async () => {
-        try {
-          const response = await fetch(
-            `https://api.carewith.life/api/v1/drug/autocomplete?keyword=${inputValue}`
-          );
-          const data = await response.json();
-          setSuggestions(data.data.names || []);
-          setShowSuggestions(true);
-        } catch (error) {
-          console.error("Error fetching suggestions:", error);
-          setShowSuggestions(false);
-        }
-      };
-      fetchSuggestions();
+  const fetchSuggestions = async (keyword: string) => {
+    if (keyword) {
+      try {
+        const response = await fetch(
+          `https://api.carewith.life/api/v1/drug/autocomplete?keyword=${keyword}`
+        );
+        const data = await response.json();
+        setSuggestions(data.data.names || []);
+        setShowSuggestions(true);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+        setShowSuggestions(false);
+      }
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
     }
+  };
+
+  const debouncedFetchSuggestions = useRef(
+    debounce((keyword: string) => fetchSuggestions(keyword), 300)
+  ).current;
+
+  useEffect(() => {
+    debouncedFetchSuggestions(inputValue);
+    return () => {
+      debouncedFetchSuggestions.cancel();
+    };
   }, [inputValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,7 +140,6 @@ const SearchBar = ({ initialValue = "", onSearch }: SearchBarProps) => {
 
 export default SearchBar;
 
-// Styled Components (동일)
 const SearchBarWrapper = styled.div`
   position: relative;
 `;
@@ -158,7 +166,7 @@ const SearchInput = styled.input`
 const ClearIcon = styled.div`
   cursor: pointer;
   position: absolute;
-  right: 10px; /* 'X' 아이콘의 위치를 조정 */
+  right: 10px;
 `;
 
 const SuggestionsContainer = styled.ul`
