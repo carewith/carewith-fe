@@ -108,7 +108,7 @@ const PillCount = styled.div<{ color: string }>`
 
 const Banner = () => {
   const [userData, setUserData] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,7 +119,7 @@ const Banner = () => {
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       } finally {
-        setLoading(false); // 데이터 로딩 후 로딩 상태를 false로 설정
+        setLoading(false);
       }
     };
     fetchData();

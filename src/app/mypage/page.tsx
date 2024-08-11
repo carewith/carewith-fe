@@ -7,11 +7,12 @@ import {
 } from "react-icons/io5";
 import { PiUserList } from "react-icons/pi";
 import { useState } from "react";
+import { PatientData } from "@/service/patient";
 
 const MyPage = () => {
-  const patientInfo = {
-    name: "김태완",
-    birth: "2001-02-22",
+  const patientInfo: PatientData = {
+    name: "김정수",
+    birth: "1964-01-30",
     diseaseName: "알츠하이머",
     since: "2019-03-02",
     severity: 2,

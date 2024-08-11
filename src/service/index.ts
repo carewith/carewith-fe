@@ -21,7 +21,7 @@ const refreshToken = async (): Promise<string> => {
 
   const newAccessToken = response.data.accessToken;
   setCookie(null, 'accessToken', newAccessToken, {
-    maxAge: 6 * 60 * 60, 
+    maxAge: 6*24 * 60 * 60, 
     path: '/',
   });
 
