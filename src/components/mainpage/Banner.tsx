@@ -1,4 +1,6 @@
 "use client";
+import React, { useEffect, useState } from "react";
+import { getUserData, User } from "@/service/userService";
 import styled from "styled-components";
 
 const BannerContainer = styled.div`
@@ -105,6 +107,32 @@ const PillCount = styled.div<{ color: string }>`
 `;
 
 const Banner = () => {
+  const [userData, setUserData] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getUserData();
+        setUserData(data);
+        console.log("Fetched user data:", data);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      } finally {
+        setLoading(false); // 데이터 로딩 후 로딩 상태를 false로 설정
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <BannerContainer>
+        <SmallText>로딩 중...</SmallText>
+      </BannerContainer>
+    );
+  }
+
   const doses = [
     { time: "오전 9:00", count: 1, status: "past" },
     { time: "오후 1:00", count: 2, status: "past" },
@@ -130,7 +158,7 @@ const Banner = () => {
     <BannerContainer>
       <SmallText>건강을 지키는 작은 습관</SmallText>
       <MainText>
-        장효준님의 복약 현황
+        {userData?.name}님의 복약 현황
         <br /> <SubText></SubText>
       </MainText>
       {nextDose && <NextDoseText>다음 복용: {nextDose.time}</NextDoseText>}

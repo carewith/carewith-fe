@@ -10,8 +10,8 @@ export function middleware(request: NextRequest) {
   if (accessToken && refreshToken) {
     const response = NextResponse.redirect(new URL('/', request.url));
     
-    response.cookies.set('accessToken', accessToken, { httpOnly: true });
-    response.cookies.set('refreshToken', refreshToken, { httpOnly: true });
+    response.cookies.set('accessToken', accessToken);
+    response.cookies.set('refreshToken', refreshToken);
 
     return response;
   }

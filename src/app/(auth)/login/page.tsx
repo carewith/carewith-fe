@@ -8,7 +8,7 @@ const LoginPage = () => {
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     if (code) {
-      fetch("https://api.carewith.life/api/v1/auth/kakao?code=" + code)
+      fetch(`${process.env.NEXT_API}/auth/kakao?code=` + code)
         .then((response) => response.json())
         .then((data) => {
           if (data.status === "SUCCESS") {
