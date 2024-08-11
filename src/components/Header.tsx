@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import Image from "next/image";
 
 const HeaderContainer = styled.header`
   width: 100%;
@@ -148,7 +149,13 @@ const Header = () => {
           ) : (
             <FaChevronLeft size={24} onClick={() => router.back()} />
           )}
-          <Logo>LOGO</Logo>
+          <Image
+            src={"/images/Carewith_logo.png"}
+            alt="logo"
+            width={30}
+            height={30}
+            onClick={() => router.push("/")}
+          />
         </LogoContainer>
         <IconContainer>
           {isEditCompletePage ? null : isMediblock ? (
