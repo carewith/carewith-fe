@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { FaChevronRight, FaRegClock } from "react-icons/fa";
 
 interface StatusProps {
-  status: "missed" | "scheduled";
+  status: string;
 }
 
 const MedicineCardContainer = styled.div`
@@ -43,7 +43,12 @@ const ChevronIcon = styled(FaChevronRight)`
 const BottomSection = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+`;
+
+const InfoSection = styled.div`
+  flex: 1;
+  margin-right: 1rem;
 `;
 
 const TimeInfo = styled.div<StatusProps>`
@@ -51,7 +56,7 @@ const TimeInfo = styled.div<StatusProps>`
   align-items: center;
   font-size: 14px;
   color: ${({ status, theme }) =>
-    status === "missed" ? theme.colors.alert.red : theme.colors.primary.blue02};
+    status === "MISSED" ? theme.colors.alert.red : theme.colors.primary.blue02};
 
   svg {
     margin-right: 4px;
@@ -74,57 +79,97 @@ const StatusButton = styled.div<StatusProps>`
   padding: 0.5rem 1rem;
   border-radius: 24px;
   font-size: 11px;
+  white-space: nowrap;
   background-color: ${({ status }) =>
-    status === "missed"
+    status === "MISSED"
       ? "#FFDFDF"
-      : status === "scheduled"
+      : status === "복용 예정"
       ? "#E9F0FF"
       : "#e0e0e0"};
   color: ${({ status }) =>
-    status === "missed"
+    status === "MISSED"
       ? "#E14143"
-      : status === "scheduled"
+      : status === "복용 예정"
       ? "#5A81FA"
       : "#808080"};
 `;
 
 interface MedicineCardProps {
-  imageUrl: string;
-  name: string;
-  time: string;
-  status: "missed" | "scheduled";
-  description: string;
+  drugImage: string;
+  drugName: string;
+  expectedTime: string;
+  status: string;
+  expectedDayOfWeek: string | null;
+  cartridgeNumber: number;
+  drugDescription: string;
 }
 
+export const formatDayOfWeek = (day: string | null): string => {
+  const days = {
+    MON: "월",
+    TUE: "화",
+    WED: "수",
+    THU: "목",
+    FRI: "금",
+    SAT: "토",
+    SUN: "일",
+  };
+  return day ? days[day as keyof typeof days] : "";
+};
+
 const MedicineCard: React.FC<MedicineCardProps> = ({
-  imageUrl,
-  name,
-  time,
+  drugImage,
+  drugName,
+  expectedTime,
   status,
-  description,
-}) => (
-  <MedicineCardContainer>
-    <TopSection>
-      <MedicineImage src={imageUrl} alt={name} />
-      <MedicineTitle>{name}</MedicineTitle>
-      <ChevronIcon />
-    </TopSection>
-    <BottomSection>
-      <div>
-        <TimeInfo status={status}>
-          <FaRegClock />
-          {time}
-          <ScheduleInfo>
-            {status === "missed" ? "지난 복용 예정" : "다음 복용 예정"}
-          </ScheduleInfo>
-        </TimeInfo>
-        <MedicineInfo>{description}</MedicineInfo>
-      </div>
-      <StatusButton status={status}>
-        {status === "missed" ? "복용 미완료" : "복용 예정"}
-      </StatusButton>
-    </BottomSection>
-  </MedicineCardContainer>
-);
+  expectedDayOfWeek,
+  cartridgeNumber,
+  drugDescription,
+}) => {
+  const isToday = status !== "복용 정보 없음" && !expectedDayOfWeek;
+  const formattedDay = formatDayOfWeek(expectedDayOfWeek);
+  const formattedTime = expectedTime.slice(0, 5);
+
+  const getTimeDisplay = () => {
+    if (status === "복용 정보 없음") return "금일 복용 계획 없음";
+    if (isToday) return formattedTime;
+    return `${formattedDay}요일 ${formattedTime}`;
+  };
+
+  const getScheduleInfo = () => {
+    if (status === "복용 정보 없음") return "";
+    return isToday ? "오늘 복용 예정" : "다음 복용 예정";
+  };
+
+  const getStatusText = () => {
+    if (status === "MISSED") return "복용 미완료";
+    if (status === "복용 예정") return "복용 예정";
+    if (status === "복용 완료") return "복용 완료";
+    return null;
+  };
+
+  return (
+    <MedicineCardContainer>
+      <TopSection>
+        <MedicineImage src={drugImage} alt={drugName} />
+        <MedicineTitle>{drugName}</MedicineTitle>
+        <ChevronIcon />
+      </TopSection>
+      <BottomSection>
+        <InfoSection>
+          <TimeInfo status={status}>
+            <FaRegClock />
+            {getTimeDisplay()}
+            <ScheduleInfo>{getScheduleInfo()}</ScheduleInfo>
+          </TimeInfo>
+          <MedicineInfo>{`카트리지 ${cartridgeNumber}번 | ${drugDescription}`}</MedicineInfo>
+        </InfoSection>
+        {getStatusText() && (
+          <StatusButton status={status}>{getStatusText()}</StatusButton>
+        )}
+      </BottomSection>
+    </MedicineCardContainer>
+  );
+};
 
 export default MedicineCard;

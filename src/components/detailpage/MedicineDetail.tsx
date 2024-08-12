@@ -1,6 +1,6 @@
 "use client";
-import { MedicineData } from "@/app/mediblock/[slug]/page";
 import styled from "styled-components";
+import { DosingSchedule } from "@/service/cartridge";
 
 const MedicineDetailContainer = styled.div`
   width: 100%;
@@ -108,49 +108,49 @@ const InfoSectionRow = styled.div`
   }
 `;
 
-const MedicineDetail: React.FC<MedicineData> = ({
-  id,
-  name,
-  classification,
-  division,
-  imageUrl,
-  dosage,
-  dailyFrequency,
-  totalDoses,
-  remainingPills,
+const MedicineDetail: React.FC<DosingSchedule> = ({
+  drugName,
+  drugClassification,
+  drugDivision,
+  drugImage,
+  drugDosage,
+  drugDoesPerDay,
+  drugTotalDoseDay,
+  drugRemains,
   times,
   startDate,
-  repeatAlarm,
-  alarmSound,
-  autoExtend,
+  expectedDayOfWeek,
+  repeat,
   memo,
 }) => {
+  const formattedStartDate = startDate.split(" ")[0];
+
   return (
     <MedicineDetailContainer>
       <Header>
         <SubTitle>
-          {classification} • {division}
+          {drugClassification} • {drugDivision}
         </SubTitle>
-        <Title>{name}</Title>
+        <Title>{drugName}</Title>
       </Header>
       <ImageContainer>
-        <MedicineImage src={imageUrl} alt={name} />
+        <MedicineImage src={drugImage} alt={drugName} />
         <Info>
           <InfoRow>
             <span>투약량</span>
-            <span>{dosage !== null ? dosage.toFixed(2) : "N/A"}</span>
+            <span>{drugDosage.toFixed(2)}</span>
           </InfoRow>
           <InfoRow>
             <span>1일 투여 횟수</span>
-            <span>{dailyFrequency}</span>
+            <span>{drugDoesPerDay}</span>
           </InfoRow>
           <InfoRow>
             <span>총 투약 일수</span>
-            <span>{totalDoses}</span>
+            <span>{drugTotalDoseDay}</span>
           </InfoRow>
           <InfoRow>
             <span>남은 알약 갯수</span>
-            <span>{remainingPills}</span>
+            <span>{drugRemains}</span>
           </InfoRow>
         </Info>
       </ImageContainer>
@@ -162,27 +162,20 @@ const MedicineDetail: React.FC<MedicineData> = ({
       <Divider />
       <InfoSection>
         <InfoSectionRow>
-          <span>주기</span>
-          <span>매일</span>
-        </InfoSectionRow>
-        <InfoSectionRow>
           <span>시작</span>
-          <span>{startDate}</span>
+          <span>{formattedStartDate}</span>
         </InfoSectionRow>
         <InfoSectionRow>
-          <span>반복알림</span>
-          <span>{repeatAlarm ? "켜짐" : "꺼짐"}</span>
+          <span>반복 알림</span>
+          <span>{repeat ? "켜짐" : "꺼짐"}</span>
         </InfoSectionRow>
         <InfoSectionRow>
-          <span>알림 사운드</span>
-          <span>{alarmSound}</span>
+          <span>주기</span>
+          <span>{expectedDayOfWeek ? expectedDayOfWeek : "매일"}</span>
         </InfoSectionRow>
-      </InfoSection>
-      <Divider />
-      <InfoSection>
         <InfoSectionRow>
-          <span>자동 연장</span>
-          <span>{autoExtend ? "켜짐" : "꺼짐"}</span>
+          <span>반복 알림</span>
+          <span>{repeat ? "켜짐" : "꺼짐"}</span>
         </InfoSectionRow>
       </InfoSection>
       <Divider />

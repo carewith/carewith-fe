@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import {
@@ -44,17 +44,21 @@ import AddedMedicines from "@/components/registpage/search/AddedMedicines";
 import SearchResults from "@/components/registpage/search/SearchResults";
 import NextButton from "@/components/registpage/search/NextButton";
 import { useDrugStore, useSearchStore } from "@/store/drugStore";
+import {
+  CartirdgeWithSheduleWithOutTerm,
+  Schedule,
+  registCartridgeWithSchedule,
+  getUsingCartridge, // Import the function
+  UsingCartridge,
+} from "@/service/cartridge";
+import TimePicker from "@/components/util/TimePicker";
+import { combineMedicine, CombineResponse } from "@/service/ai";
 
 type Medicine = {
   id: number;
   name: string;
   description: string;
   imageUrl: string;
-};
-
-type Alarm = {
-  id: number;
-  time: string;
 };
 
 const SearchRegisterPage = () => {
@@ -66,8 +70,33 @@ const SearchRegisterPage = () => {
     null
   );
   const [step, setStep] = useState(1);
-  const [alarms, setAlarms] = useState<Alarm[]>([]);
+  const [cartridgeNumber, setCartridgeNumber] = useState<number | null>(null);
+  const [dosage, setDosage] = useState<number>(1);
+  const [dosePerDay, setDosePerDay] = useState<number>(3);
+  const [totalDoseDays, setTotalDoseDays] = useState<number>(7);
+  const [drugRemains, setDrugRemains] = useState<number>(12);
+  const [alarms, setAlarms] = useState<Schedule[]>([]);
   const [isClosing, setIsClosing] = useState(false);
+  const [combineResult, setCombineResult] = useState<CombineResponse | null>(
+    null
+  );
+  const [usingCartridges, setUsingCartridges] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (step === 2) {
+      const fetchUsingCartridges = async () => {
+        try {
+          const data: UsingCartridge = await getUsingCartridge(
+            localStorage.getItem("mainDispenser")
+          );
+          setUsingCartridges(data.usingNumbers);
+        } catch (error) {
+          console.error("Error fetching using cartridges:", error);
+        }
+      };
+      fetchUsingCartridges();
+    }
+  }, [step]);
 
   const handleAddMedicine = (medicine: Medicine) => {
     setSelectedMedicine(medicine);
@@ -86,10 +115,26 @@ const SearchRegisterPage = () => {
     setStep(step - 1);
   };
 
-  const handleCompleteRegistration = () => {
-    if (selectedMedicine) {
-      setAddedMedicines([...addedMedicines, selectedMedicine]);
-      setStep(4);
+  const handleCompleteRegistration = async () => {
+    if (selectedMedicine && cartridgeNumber) {
+      const registData: CartirdgeWithSheduleWithOutTerm = {
+        number: cartridgeNumber,
+        memo: "aa",
+        dosage,
+        doesPerDay: dosePerDay,
+        totalDoseDays,
+        drugRemains,
+        repeatable: true,
+        dispenserId: localStorage.getItem("mainDispenser"),
+        drugId: selectedMedicine.id,
+        reminderSoundId: 1,
+        schedules: alarms.map((alarm) => ({
+          dayOfWeek: "MON",
+          time: convertTo24HourFormat(alarm.time),
+        })),
+      };
+      await registCartridgeWithSchedule(registData);
+      setStep(6);
 
       setTimeout(() => {
         setIsClosing(true);
@@ -120,13 +165,65 @@ const SearchRegisterPage = () => {
     setKeyword("");
   };
 
-  const handleAddAlarm = () => {
-    const newAlarm: Alarm = { id: alarms.length + 1, time: "오전 9:00" };
-    setAlarms([...alarms, newAlarm]);
+  const handleCombineCheck = async () => {
+    if (!selectedMedicine) return;
+    const updatedMedicines = [...addedMedicines, selectedMedicine];
+
+    console.log("Checking compatibility for medicines:", updatedMedicines);
+
+    const drugNames = updatedMedicines.map((medicine) => medicine.name);
+    try {
+      const result = await combineMedicine(
+        localStorage.getItem("mainDispenser"),
+        drugNames
+      );
+      setCombineResult(result);
+      if (result.isCombinable) {
+        alert("약물이 혼용이 가능합니다.");
+        setStep(2);
+      } else {
+        alert(`주의: ${result.caution}`);
+      }
+    } catch (error) {
+      console.error("Error checking drug combination:", error);
+      alert("오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
-  const handleRemoveAlarm = (id: number) => {
-    setAlarms(alarms.filter((alarm) => alarm.id !== id));
+  const formatTimeToAMPM = (time: string): string => {
+    const [hour, minute] = time.split(":").map(Number);
+    const period = hour >= 12 ? "오후" : "오전";
+    const formattedHour = hour % 12 || 12;
+    return `${period} ${formattedHour}:${minute.toString().padStart(2, "0")}`;
+  };
+
+  const convertTo24HourFormat = (time: string): string => {
+    const [period, hourMinute] = time.split(" ");
+    let [hour, minute] = hourMinute.split(":").map(Number);
+
+    if (period === "오후" && hour < 12) {
+      hour += 12;
+    } else if (period === "오전" && hour === 12) {
+      hour = 0;
+    }
+
+    return `${hour.toString().padStart(2, "0")}:${minute
+      .toString()
+      .padStart(2, "0")}:00`;
+  };
+
+  const handleTimeSelection = (formattedTime: string) => {
+    const newAlarm = { dayOfWeek: "MON", time: formattedTime };
+    setAlarms([...alarms, newAlarm]);
+    setStep(4);
+  };
+
+  const handleAddAlarm = () => {
+    setStep(5);
+  };
+
+  const handleRemoveAlarm = (index: number) => {
+    setAlarms(alarms.filter((_, i) => i !== index));
   };
 
   return (
@@ -175,14 +272,17 @@ const SearchRegisterPage = () => {
                 alt={selectedMedicine.name}
               />
               <MedicineDetails>
-                {step !== 4 ? (
+                {step === 1 ? (
                   <>
                     <MedicineName>{selectedMedicine.name}</MedicineName>
                     <MedicineDescription>
                       {selectedMedicine.description}
                     </MedicineDescription>
+                    <NextStepButton onClick={handleCombineCheck} fullWidth>
+                      혼용 적합성 확인
+                    </NextStepButton>
                   </>
-                ) : (
+                ) : step === 6 ? (
                   <>
                     <SectionTitle style={{ fontSize: "13px" }}>
                       <span style={{ color: "black", fontWeight: 400 }}>
@@ -195,6 +295,13 @@ const SearchRegisterPage = () => {
 
                     <MedicineName>{selectedMedicine.name}</MedicineName>
                   </>
+                ) : (
+                  <>
+                    <MedicineName>{selectedMedicine.name}</MedicineName>
+                    <MedicineDescription>
+                      {selectedMedicine.description}
+                    </MedicineDescription>
+                  </>
                 )}
               </MedicineDetails>
             </MedicineInfo>
@@ -202,13 +309,26 @@ const SearchRegisterPage = () => {
             <StepContainer>
               {step === 1 && (
                 <StepContent key={step}>
+                  <NextStepButton onClick={handleNextStep} fullWidth>
+                    다음
+                  </NextStepButton>
+                </StepContent>
+              )}
+              {step === 2 && (
+                <StepContent key={step}>
                   <StepTitle>기기 약통 번호 선택</StepTitle>
                   <StepDescription>
                     홈과 약 정보 관리 페이지에서 수정할 수 있어요
                   </StepDescription>
                   <ButtonGrid>
                     {[1, 2, 3, 4, 5, 6].map((num) => (
-                      <NumberButton key={num}>{num}</NumberButton>
+                      <NumberButton
+                        key={num}
+                        onClick={() => setCartridgeNumber(num)}
+                        disabled={usingCartridges.includes(num)}
+                      >
+                        {num}
+                      </NumberButton>
                     ))}
                   </ButtonGrid>
                   <NextStepButton onClick={handleNextStep} fullWidth>
@@ -217,7 +337,7 @@ const SearchRegisterPage = () => {
                 </StepContent>
               )}
 
-              {step === 2 && (
+              {step === 3 && (
                 <StepContent key={step}>
                   <StepTitle>투약 정보 입력</StepTitle>
                   <StepDescription>
@@ -232,7 +352,8 @@ const SearchRegisterPage = () => {
                         <Input
                           type="number"
                           placeholder="1.0"
-                          defaultValue="1.00"
+                          defaultValue={dosage}
+                          onChange={(e) => setDosage(Number(e.target.value))}
                         />
                       </InputWrapper>
                     </FormGroup>
@@ -241,13 +362,27 @@ const SearchRegisterPage = () => {
                         1일 투여 횟수 <InfoIcon>!</InfoIcon>
                       </Label>
                       <InputWrapper>
-                        <Input type="number" placeholder="3" defaultValue="3" />
+                        <Input
+                          type="number"
+                          placeholder="3"
+                          defaultValue={dosePerDay}
+                          onChange={(e) =>
+                            setDosePerDay(Number(e.target.value))
+                          }
+                        />
                       </InputWrapper>
                     </FormGroup>
                     <FormGroup>
                       <Label>총 투약 일수</Label>
                       <InputWrapper>
-                        <Input type="number" placeholder="7" defaultValue="7" />
+                        <Input
+                          type="number"
+                          placeholder="7"
+                          defaultValue={totalDoseDays}
+                          onChange={(e) =>
+                            setTotalDoseDays(Number(e.target.value))
+                          }
+                        />
                       </InputWrapper>
                     </FormGroup>
                     <FormGroup>
@@ -258,7 +393,10 @@ const SearchRegisterPage = () => {
                         <Input
                           type="number"
                           placeholder="12"
-                          defaultValue="12"
+                          defaultValue={drugRemains}
+                          onChange={(e) =>
+                            setDrugRemains(Number(e.target.value))
+                          }
                         />
                       </InputWrapper>
                     </FormGroup>
@@ -274,19 +412,17 @@ const SearchRegisterPage = () => {
                   </ButtonContainer>
                 </StepContent>
               )}
-              {step === 3 && (
+              {step === 4 && (
                 <StepContent key={step}>
                   <StepTitle>알람 설정</StepTitle>
                   <StepDescription>
                     알람 설정을 추가할 수 있습니다.
                   </StepDescription>
                   <ScrollableAlarmContainer>
-                    {alarms.map((alarm) => (
-                      <AlarmItem key={alarm.id}>
-                        <AlarmTime>{alarm.time}</AlarmTime>
-                        <CloseButton
-                          onClick={() => handleRemoveAlarm(alarm.id)}
-                        >
+                    {alarms.map((alarm, index) => (
+                      <AlarmItem key={index}>
+                        <AlarmTime>{`${alarm.dayOfWeek} ${alarm.time}`}</AlarmTime>
+                        <CloseButton onClick={() => handleRemoveAlarm(index)}>
                           <IoClose size={20} />
                         </CloseButton>
                       </AlarmItem>
@@ -306,8 +442,16 @@ const SearchRegisterPage = () => {
                   </ButtonContainer>
                 </StepContent>
               )}
-
-              {step === 4 && (
+              {step === 5 && (
+                <StepContent key={step}>
+                  <StepTitle>알람 시간 설정</StepTitle>
+                  <div>
+                    <p>시간을 선택하세요:</p>
+                    <TimePicker onSelectTime={handleTimeSelection} />
+                  </div>
+                </StepContent>
+              )}
+              {step === 6 && (
                 <StepContent key={step}>
                   <RoutingButton onClick={handleCloseModal} fullWidth>
                     추가 등록하기

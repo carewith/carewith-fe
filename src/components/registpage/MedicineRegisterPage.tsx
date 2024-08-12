@@ -1,8 +1,15 @@
 "use client";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import MedicineCard from "./MedicineCard";
 import AddButton from "./AddButton";
 import { IoSettingsOutline } from "react-icons/io5";
+import { StepDescription } from "./add/RegisterAddPage.styles";
+import {
+  getAllCatridge,
+  TodayList,
+  TodayListResponse,
+} from "@/service/cartridge";
 
 const MedicineRegisterPageContainer = styled.div`
   display: flex;
@@ -22,24 +29,22 @@ const Header = styled.div`
 `;
 
 const MedicineRegisterPage = () => {
-  const medicines = [
-    {
-      id: 1,
-      name: "아리셉트 정 5mg",
-      time: "오후 7:00",
-      status: "missed" as "missed" | "scheduled",
-      description: "도네페질염산염으로서 1일 1회 5mg씩...",
-      imageUrl: "/images/mediblock.png",
-    },
-    {
-      id: 2,
-      name: "아리셉트 정 5mg",
-      time: "오후 10:00",
-      status: "scheduled" as "missed" | "scheduled",
-      description: "도네페질염산염으로서 1일 1회 5mg씩...",
-      imageUrl: "/images/mediblock.png",
-    },
-  ];
+  const [medicines, setMedicines] = useState<TodayList[]>([]);
+
+  useEffect(() => {
+    const fetchMedicines = async () => {
+      try {
+        const response = await getAllCatridge(
+          localStorage.getItem("mainDispenser") || ""
+        );
+        setMedicines(response.statuses);
+      } catch (error) {
+        console.error("Failed to fetch medicines:", error);
+      }
+    };
+
+    fetchMedicines();
+  }, []);
 
   return (
     <MedicineRegisterPageContainer>
@@ -49,12 +54,14 @@ const MedicineRegisterPage = () => {
       </Header>
       {medicines.map((medicine) => (
         <MedicineCard
-          key={medicine.id}
-          imageUrl={medicine.imageUrl}
-          name={medicine.name}
-          time={medicine.time}
+          key={medicine.cartridgeId}
+          drugImage={medicine.drugImage}
+          drugName={medicine.drugName}
+          expectedTime={medicine.expectedTime}
           status={medicine.status}
-          description={medicine.description}
+          expectedDayOfWeek={medicine.expectedDayOfWeek}
+          cartridgeNumber={medicine.cartridgeNumber}
+          drugDescription={medicine.drugDescription}
         />
       ))}
       <AddButton />

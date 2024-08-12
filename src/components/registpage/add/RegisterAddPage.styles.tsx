@@ -206,19 +206,21 @@ export const ButtonGrid = styled.div`
   gap: 0.5rem;
   margin: 1rem 0;
 `;
-
-export const NumberButton = styled.button`
+export const NumberButton = styled.button<{ disabled: boolean }>`
   padding: 1rem;
   font-size: 17px;
   min-height: 70px;
-  background-color: #f0f0f0;
-  border: none;
-  color: #d9d9d9;
+  background-color: ${({ disabled, theme }) =>
+    disabled ? "#e0e0e0" : "white"};
+  border: 1px solid ${({ disabled }) => (disabled ? "transparent" : "#d9d9d9")};
+  color: ${({ disabled }) => (disabled ? "#a0a0a0" : "#d9d9d9")};
   border-radius: 12px;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary.blue02};
-    color: white;
+    background-color: ${({ disabled, theme }) =>
+      disabled ? "#e0e0e0" : theme.colors.primary.blue02};
+    color: ${({ disabled }) => (disabled ? "#a0a0a0" : "#d9d9d9")};
   }
 `;
 

@@ -40,3 +40,25 @@ export const getReminder = async (): Promise<ReminderListType> => {
   const response = await requestWithAuth<ReminderListType>(config);
   return response;
 };
+
+
+
+export const patchReminder = async (cartridgeId: string, schedules: Schedule[], days: string[]): Promise<responseReminder> => {
+  const schedulesForDays = days.flatMap((day) => 
+    schedules.map((schedule) => ({
+      dayOfWeek: day,
+      time: schedule.time,
+    }))
+  );
+
+  const config: AxiosRequestConfig = {
+    url: `${process.env.NEXT_API}/cartridge/${cartridgeId}/reminder`,
+    method: 'patch',
+    data: {
+      schedules: schedulesForDays,
+    },
+  };
+
+  const response = await requestWithAuth<responseReminder>(config);
+  return response;
+};

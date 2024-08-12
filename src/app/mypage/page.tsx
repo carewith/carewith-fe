@@ -14,7 +14,6 @@ const MyPage = () => {
     name: "김정수",
     birth: "1964-01-30",
     diseaseName: "알츠하이머",
-    since: "2019-03-02",
     severity: 2,
   };
 
@@ -50,10 +49,7 @@ const MyPage = () => {
               <Category>질병</Category>
               <Content>{patientInfo.diseaseName}</Content>
             </PatientDetailText>
-            <PatientDetailText>
-              <Category>진단 날짜</Category>
-              <Content>{patientInfo.since}</Content>
-            </PatientDetailText>
+
             <PatientDetailText>
               <Category>중증도</Category>
               <Content>중간단계</Content>

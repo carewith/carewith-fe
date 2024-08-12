@@ -12,7 +12,7 @@ export type Cartridge = {
   doesPerDay: number,
   totalDoseDays: number,
   drugRemains: number,
-  repeatable: true,
+  repeatable: boolean,
   reminderTerm: number,
   dispenserId: string | null,
   drugId: number,
@@ -34,7 +34,7 @@ export type UsingCartridge = {
 
 export type patchCartridge = Omit<Cartridge, 'dispenserId' | 'drugId' | 'reminderSoundId'>;
 
-export type PatchCartridgeWithAlarmData = Omit<Cartridge, 'dispenserId' | 'drugId' | 'reminderSoundId'> & {
+export type PatchCartridgeWithAlarmData = Omit<Cartridge, 'dispenserId' | 'drugId' | 'reminderSoundId' | 'reminderTerm'> & {
   schedules: Schedule[];
 };
 
@@ -120,7 +120,7 @@ export const patchCartridgeMedicine = async (cartridgeId:string,updateData:patch
   return data;
 };
 
-export const getUsingCartridge = async (dispenserId:string): Promise<UsingCartridge> => {
+export const getUsingCartridge = async (dispenserId:string|null): Promise<UsingCartridge> => {
   const config: AxiosRequestConfig = {
     url: `${process.env.NEXT_API}/cartridge/using/${dispenserId}`,
     method: 'get',
@@ -141,7 +141,7 @@ export const patchCartridgeWithAlarm = async (cartridgeId:string,updateData:Patc
   return data;
 };
 
-export const getTodayCatridge = async(dispenserId : string ): Promise<TodayListResponse> => {
+export const getTodayCatridge = async(dispenserId : string |null): Promise<TodayListResponse> => {
     const config: AxiosRequestConfig = {
     url: `${process.env.NEXT_API}/cartridge/status/now/${dispenserId}`,
     method: 'get',

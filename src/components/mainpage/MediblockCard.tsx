@@ -1,14 +1,10 @@
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
 import { FaChevronRight, FaRegClock } from "react-icons/fa";
+import { TodayList } from "@/service/cartridge";
 
 interface MediblockCardProps {
-  id: number;
-  time: string;
-  medicineName: string;
-  image: string;
-  taken: boolean;
-  scheduled: boolean;
+  cartridge: TodayList;
 }
 
 const Card = styled.div`
@@ -42,12 +38,12 @@ const Title = styled.h2`
   margin: 0.5rem 0;
 `;
 
-const Time = styled.p<{ taken: boolean; scheduled: boolean }>`
+const Time = styled.p<{ status: string }>`
   font-size: 0.875rem;
-  color: ${({ theme, taken, scheduled }) =>
-    taken
+  color: ${({ theme, status }) =>
+    status === "복용 완료"
       ? theme.colors.grey.grey02
-      : scheduled
+      : status === "복용 예정"
       ? theme.colors.primary.blue02
       : theme.colors.alert.red};
   margin-bottom: 0.5rem;
@@ -56,18 +52,18 @@ const Time = styled.p<{ taken: boolean; scheduled: boolean }>`
   gap: 0.25rem;
 `;
 
-const Status = styled.p<{ taken: boolean; scheduled: boolean }>`
+const Status = styled.p<{ status: string }>`
   font-size: 0.875rem;
-  color: ${({ theme, taken, scheduled }) =>
-    taken
+  color: ${({ theme, status }) =>
+    status === "복용 완료"
       ? theme.colors.grey.grey02
-      : scheduled
+      : status === "복용 예정"
       ? theme.colors.primary.blue02
       : theme.colors.alert.red};
-  background-color: ${({ theme, taken, scheduled }) =>
-    taken
+  background-color: ${({ theme, status }) =>
+    status === "복용 완료"
       ? theme.colors.grey.background
-      : scheduled
+      : status === "복용 예정"
       ? theme.colors.primary.blue04
       : theme.colors.alert.background};
   padding: 0.5rem 0;
@@ -77,32 +73,29 @@ const Status = styled.p<{ taken: boolean; scheduled: boolean }>`
   display: inline-block;
 `;
 
-const MediblockCard: React.FC<MediblockCardProps> = ({
-  id,
-  time,
-  medicineName,
-  image,
-  taken,
-  scheduled,
-}) => {
+const MediblockCard: React.FC<MediblockCardProps> = ({ cartridge }) => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/mediblock/${id}`);
+    router.push(`/cartridge/${cartridge.cartridgeId}`);
   };
 
   return (
     <Card>
       <ImageContainer>
-        <Image src={image} alt={medicineName} />
+        <Image src={cartridge.drugImage} alt={cartridge.drugName} />
         <FaChevronRight color="#ddd" onClick={handleClick} />
       </ImageContainer>
-      <Title>{medicineName}</Title>
-      <Time taken={taken} scheduled={scheduled}>
-        <FaRegClock /> {time}
+      <Title>{cartridge.drugName}</Title>
+      <Time status={cartridge.status}>
+        <FaRegClock /> {cartridge.expectedTime}
       </Time>
-      <Status taken={taken} scheduled={scheduled}>
-        {taken ? "복용 완료" : scheduled ? "복용 예정" : "복용 미완료"}
+      <Status status={cartridge.status}>
+        {cartridge.status === "복용 완료"
+          ? "복용 완료"
+          : cartridge.status === "복용 예정"
+          ? "복용 예정"
+          : "복용 미완료"}
       </Status>
     </Card>
   );

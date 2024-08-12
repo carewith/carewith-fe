@@ -34,11 +34,6 @@ const LogoContainer = styled.div`
   gap: 12px;
 `;
 
-const Logo = styled.div`
-  font-size: 26px;
-  font-weight: bold;
-`;
-
 const IconContainer = styled.div`
   display: flex;
   gap: 1rem;
@@ -48,8 +43,8 @@ const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -121,19 +116,23 @@ const Header = () => {
   const pathname = usePathname();
 
   const isHomePage = pathname === "/";
-  const isMediblock = pathname.startsWith("/mediblock");
+  const isMediblock = pathname.startsWith("/cartridge");
   const isEditCompletePage = pathname.endsWith("/edit/complete");
+  const isEditPage = pathname.endsWith("/edit");
+
+  const isEditPath = pathname.includes("/edit");
 
   const handleEditClick = () => {
     const slug = pathname.split("/")[2];
-    if (pathname.includes("/edit")) {
+    if (isEditPath) {
       setShowModal(false);
       setShowAlert(true);
     } else {
       setShowModal(false);
-      router.push(`/mediblock/${slug}/edit`);
+      router.push(`/cartridge/${slug}/edit`);
     }
   };
+
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   if (isAuthPage) {
@@ -144,32 +143,41 @@ const Header = () => {
     <>
       <HeaderContainer>
         <LogoContainer>
-          {isHomePage || isMediblock ? (
+          {isEditPath ? (
+            // Only show the back icon when on an edit page
+            <FaChevronLeft size={24} onClick={() => router.back()} />
+          ) : isHomePage || isMediblock ? (
             <RxHamburgerMenu size={24} />
           ) : (
             <FaChevronLeft size={24} onClick={() => router.back()} />
           )}
-          <Image
-            src={"/images/Carewith_logo.png"}
-            alt="logo"
-            width={30}
-            height={30}
-            onClick={() => router.push("/")}
-          />
-        </LogoContainer>
-        <IconContainer>
-          {isEditCompletePage ? null : isMediblock ? (
-            <HiOutlineDotsVertical
-              size={24}
-              onClick={() => setShowModal(true)}
+
+          {/* Hide the logo when on an edit page */}
+          {!isEditPath && (
+            <Image
+              src={"/images/Carewith_logo.png"}
+              alt="logo"
+              width={30}
+              height={30}
+              onClick={() => router.push("/")}
             />
-          ) : (
-            <>
-              <FaRegBell size={24} />
-              <FaRegUserCircle size={24} />
-            </>
           )}
-        </IconContainer>
+        </LogoContainer>
+        {!isEditPath && (
+          <IconContainer>
+            {isEditCompletePage ? null : isMediblock ? (
+              <HiOutlineDotsVertical
+                size={24}
+                onClick={() => setShowModal(true)}
+              />
+            ) : (
+              <>
+                <FaRegBell size={24} />
+                <FaRegUserCircle size={24} />
+              </>
+            )}
+          </IconContainer>
+        )}
       </HeaderContainer>
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>

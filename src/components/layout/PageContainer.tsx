@@ -6,7 +6,7 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding-top: 2rem;
+  padding: 2rem 1rem;
 `;
 
 export default PageContainer;
