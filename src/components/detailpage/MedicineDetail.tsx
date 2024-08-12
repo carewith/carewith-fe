@@ -1,6 +1,7 @@
 "use client";
 import styled from "styled-components";
 import { DosingSchedule } from "@/service/cartridge";
+import { useMemo } from "react";
 
 const MedicineDetailContainer = styled.div`
   width: 100%;
@@ -124,7 +125,15 @@ const MedicineDetail: React.FC<DosingSchedule> = ({
   memo,
 }) => {
   const formattedStartDate = startDate.split(" ")[0];
-
+  const processedTimes = useMemo(() => {
+    return Array.from(new Set(times))
+      .map((time) => time.slice(0, -3))
+      .sort((a, b) => {
+        const [aHours, aMinutes] = a.split(":").map(Number);
+        const [bHours, bMinutes] = b.split(":").map(Number);
+        return aHours * 60 + aMinutes - (bHours * 60 + bMinutes);
+      });
+  }, [times]);
   return (
     <MedicineDetailContainer>
       <Header>
@@ -155,7 +164,7 @@ const MedicineDetail: React.FC<DosingSchedule> = ({
         </Info>
       </ImageContainer>
       <TimeContainer>
-        {times.map((time, index) => (
+        {processedTimes.map((time, index) => (
           <TimeItem key={index}>{time}</TimeItem>
         ))}
       </TimeContainer>
