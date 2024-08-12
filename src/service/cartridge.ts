@@ -1,8 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import { requestWithAuth } from '.';
 
-
-
 export type CartridgeId = {
     id:string
 }
@@ -25,13 +23,13 @@ export type Schedule = {
     time:string
 }
 
+export type CartridgeWithSchedule = Cartridge & {
+    schedule:Schedule[]
+}
 export type UsingCartridge = {
     usingNumbers : number[]
 }
 
-export type CartridgeWithSchedule = Cartridge & {
-    schedule:Schedule[]
-}
 
 export type patchCartridge = Omit<Cartridge, 'dispenserId' | 'drugId' | 'reminderSoundId'>;
 
