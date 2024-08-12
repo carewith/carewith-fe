@@ -14,7 +14,7 @@ export type Cartridge = {
   drugRemains: number,
   repeatable: true,
   reminderTerm: number,
-  dispenserId: string,
+  dispenserId: string | null,
   drugId: number,
   reminderSoundId: number
 }
@@ -24,8 +24,9 @@ export type Schedule = {
 }
 
 export type CartridgeWithSchedule = Cartridge & {
-    schedule:Schedule[]
+    schedules:Schedule[]
 }
+export type CartirdgeWithSheduleWithOutTerm = Omit<CartridgeWithSchedule , 'reminderTerm'>;
 export type UsingCartridge = {
     usingNumbers : number[]
 }
@@ -37,6 +38,45 @@ export type PatchCartridgeWithAlarmData = Omit<Cartridge, 'dispenserId' | 'drugI
   schedules: Schedule[];
 };
 
+export type TodayList = {
+     cartridgeId: number,
+        cartridgeNumber: number,
+        drugImage: string,
+        drugName: string,
+        recentDayOfWeek: string,
+        recentTime: string,
+        expectedDayOfWeek:string,
+        expectedTime: string,
+        status:string,
+        drugDescription:string,
+        
+}
+
+export type TodayListResponse = {
+    statuses : TodayList[]
+}
+
+export type DosingSchedule = {
+    recentDayOfWeek: string | null;
+    recentTime: string;
+    expectedDayOfWeek: string;
+    expectedTime: string;
+    dosingStatus: string;
+    cartridgeNumber: number;
+    drugDivision: string;
+    drugClassification: string;
+    drugName: string;
+    drugImage: string;
+    drugDosage: number;
+    drugDoesPerDay: number;
+    drugTotalDoseDay: number;
+    drugRemains: number;
+    startDate: string;
+    repeat: boolean;
+    memo: string;
+    times: string[];
+    dates: string[];
+};
 
 
 export const registCartridge = async (registData:Cartridge): Promise<CartridgeId> => {
@@ -49,7 +89,7 @@ export const registCartridge = async (registData:Cartridge): Promise<CartridgeId
   return data;
 };
 
-export const registCartridgeWithSchedule = async (registData:CartridgeWithSchedule): Promise<CartridgeId> => {
+export const registCartridgeWithSchedule = async (registData:CartirdgeWithSheduleWithOutTerm): Promise<CartridgeId> => {
   const config: AxiosRequestConfig = {
     url: `${process.env.NEXT_API}/cartridge/schedule`,
     method: 'post',
@@ -100,3 +140,34 @@ export const patchCartridgeWithAlarm = async (cartridgeId:string,updateData:Patc
   const data = await requestWithAuth<CartridgeId>(config);
   return data;
 };
+
+export const getTodayCatridge = async(dispenserId : string ): Promise<TodayListResponse> => {
+    const config: AxiosRequestConfig = {
+    url: `${process.env.NEXT_API}/cartridge/status/now/${dispenserId}`,
+    method: 'get',
+  };
+
+  const response = await requestWithAuth<TodayListResponse>(config);
+  return response;
+}
+
+export const getAllCatridge = async(dispenserId : string ): Promise<TodayListResponse> => {
+    const config: AxiosRequestConfig = {
+    url: `${process.env.NEXT_API}/cartridge/status/all/${dispenserId}`,
+    method: 'get',
+  };
+
+  const response = await requestWithAuth<TodayListResponse>(config);
+  return response;
+}
+
+
+export const getInfoCartridge = async (cartridgeId:string):Promise<DosingSchedule> => {
+     const config: AxiosRequestConfig = {
+    url: `${process.env.NEXT_API}/cartridge/info/${cartridgeId}`,
+    method: 'get',
+  };
+
+  const response = await requestWithAuth<DosingSchedule>(config);
+  return response;
+}

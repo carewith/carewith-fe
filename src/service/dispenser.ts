@@ -5,6 +5,11 @@ export type Dispenser = {
     id:string
 }
 
+export type DispenserData ={
+    name:string;
+    location:string;
+    volume:number;
+}
 export type DispenserWithStatus = Dispenser & {
     status: string;
 }
@@ -57,15 +62,13 @@ export const patchMainDispenser = async (dispenserId:string): Promise<Dispenser>
 
 
 
-export const registDispenser = async (dispenserId: string, patientId: number): Promise<Dispenser> => {
+export const registDispenser = async (dispenserId: string, dispencerData:DispenserData): Promise<Dispenser> => {
   const config: AxiosRequestConfig = {
     url: `${process.env.NEXT_API}/dispenser/${dispenserId}`,
     method: 'post',
-    data: {
-        patientId
-    },
+    data: dispencerData
   };
-
   const response = await requestWithAuth<Dispenser>(config);
   return response;
 };
+
