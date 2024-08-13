@@ -354,6 +354,7 @@ const MedicineEditDetail: React.FC<MedicineEditDetailProps> = ({
       drugRemains: editData.drugRemains,
       repeatable: editData.repeat,
       schedules: schedules,
+      since: startDate,
     };
 
     try {
