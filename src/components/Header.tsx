@@ -148,7 +148,7 @@ const Header = () => {
       try {
         await deleteCartridge(slug);
         setShowModal(false);
-        router.push("/home");
+        router.push("/register");
       } catch (error) {
         console.error("Error deleting cartridge:", error);
         alert("카트리지 삭제 중 오류가 발생했습니다.");
@@ -181,7 +181,9 @@ const Header = () => {
             //   height={30}
             //   onClick={() => router.push("/home")}
             // />
-            <LogoText id="logo">Carewith</LogoText>
+            <LogoText id="logo" onClick={() => router.push("/home")}>
+              Carewith
+            </LogoText>
           )}
         </LogoContainer>
         {!isEditPath && (

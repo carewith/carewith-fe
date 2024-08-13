@@ -19,8 +19,8 @@
 
 @font-face {
   font-family: 'MtBold';
-  src: url('/fonts/arialroundedmtbold.ttf') format('opentype');
-  font-weight: 400;
+  src: url('/fonts/mtbold.ttf') format('opentype');
+  font-weight: 500;
   font-style: normal;
 }
 

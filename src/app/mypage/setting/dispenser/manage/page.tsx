@@ -3,16 +3,21 @@ import styled from "styled-components";
 import { SettingHeader } from "@/components/settingPage/SettingHeader";
 import { IoChevronForward } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 function ManageDispenser() {
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
   return (
     <SettingContainer>
       <SettingHeader title="디스펜서 관리" />
       <SectionTitle>설정</SectionTitle>
       <ContentSection>
-        <SettingItem>
+        <SettingItem onClick={toggleModal}>
           <div>
             <Label>디스펜서</Label>
             <Value>사용자 지정 이름</Value>
@@ -46,10 +51,23 @@ function ManageDispenser() {
         <DispenserButton outlined>디스펜서 삭제</DispenserButton>
       </DispenserInfoSection>
       <AddDispenserButton
-        onClick={() => router.push("/mypage/setting/dispenser/regist")}
+        onClick={() => router.push("/mypage/setting/dispenser/choice")}
       >
         + 추가 디스펜서 등록
       </AddDispenserButton>
+
+      {isModalOpen && (
+        <ModalOverlay onClick={toggleModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHandle />
+            <ModalTitle>디스펜서명</ModalTitle>
+            <InputWrapper>
+              <Input type="text" placeholder="디스펜서명 입력" />
+            </InputWrapper>
+            <ModalButton>완료</ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </SettingContainer>
   );
 }
@@ -157,4 +175,60 @@ const AddDispenserButton = styled(DispenserButton)`
   color: ${({ theme }) => theme.colors.primary.blue02};
   border: 1px solid ${({ theme }) => theme.colors.primary.blue02};
   margin-top: 16px;
+`;
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  width: 100%;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  padding: 20px;
+`;
+
+const ModalHandle = styled.div`
+  width: 40px;
+  height: 4px;
+  background-color: ${({ theme }) => theme.colors.grey.grey03};
+  border-radius: 2px;
+  margin: 0 auto 20px;
+`;
+
+const ModalTitle = styled.h3`
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const InputWrapper = styled.div`
+  margin-bottom: 20px;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid ${({ theme }) => theme.colors.grey.grey03};
+  border-radius: 8px;
+  font-size: 16px;
+`;
+
+const ModalButton = styled.button`
+  width: 100%;
+  padding: 12px;
+  background-color: ${({ theme }) => theme.colors.primary.blue02};
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
 `;
