@@ -108,7 +108,7 @@ const SearchRegisterPage = () => {
       const fetchUsingCartridges = async () => {
         try {
           const data: UsingCartridge = await getUsingCartridge(
-            localStorage.getItem("mainDispenser")
+            localStorage.getItem("dispenserId")
           );
           setUsingCartridges(data.usingNumbers);
         } catch (error) {
@@ -128,7 +128,7 @@ const SearchRegisterPage = () => {
 
     try {
       const result = await combineMedicine(
-        localStorage.getItem("mainDispenser"),
+        localStorage.getItem("dispenserId"),
         drugNames
       );
       setCombineResult(result);
@@ -190,7 +190,7 @@ const SearchRegisterPage = () => {
         totalDoseDays,
         drugRemains,
         repeatable: repeat,
-        dispenserId: localStorage.getItem("mainDispenser"),
+        dispenserId: localStorage.getItem("dispenserId"),
         drugId: selectedMedicine.id,
         reminderSoundId: reminderSound,
         schedules: schedules,
@@ -237,7 +237,7 @@ const SearchRegisterPage = () => {
     const drugNames = updatedMedicines.map((medicine) => medicine.name);
     try {
       const result = await combineMedicine(
-        localStorage.getItem("mainDispenser"),
+        localStorage.getItem("dispenserId"),
         drugNames
       );
       setCombineResult(result);

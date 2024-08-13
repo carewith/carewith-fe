@@ -261,7 +261,7 @@ const MedicineEditDetail: React.FC<MedicineEditDetailProps> = ({
     const fetchUsingCartridges = async () => {
       try {
         const data: UsingCartridge = await getUsingCartridge(
-          localStorage.getItem("mainDispenser")
+          localStorage.getItem("dispenserId")
         );
         setUsingCartridges(data.usingNumbers);
       } catch (error) {
