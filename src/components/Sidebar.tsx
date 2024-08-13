@@ -13,6 +13,11 @@ import { Divider, NavItemWrapper, NavText } from "./mypage/myPage.styles";
 
 import { FaArrowsRotate } from "react-icons/fa6";
 import { getUserData, User } from "@/service/userService";
+import {
+  DispenserPatientType,
+  getDispenserPatient,
+  PatientType,
+} from "@/service/dispenser";
 interface MenuItemWithCloseProps {
   href: string;
   children: ReactNode;
@@ -246,6 +251,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const [userData, setUserData] = useState<User | null>(null);
+  const [patientData, setPatientData] = useState<PatientType | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -260,6 +266,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
     fetchUserData();
   }, []);
+
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const data = await getDispenserPatient();
+        if (data.dispenserPatients && data.dispenserPatients.length > 0) {
+          setPatientData(data.dispenserPatients[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch patient data:", error);
+      }
+    };
+
+    if (isOpen) {
+      fetchPatientData();
+    }
+  }, [isOpen]);
 
   const MenuItemWithClose: React.FC<MenuItemWithCloseProps> = ({
     href,
@@ -310,17 +333,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <DispenserBanner>
             <DispenserIcon>
               <ProfileImage
-                src={userData?.profileImage || "/images/profile.png"}
-                alt="Profile"
+                src={patientData?.patientProfileImage || "/images/profile.png"}
+                alt="Patient Profile"
               />
             </DispenserIcon>
             <DispenserInfo>
               <DispenserTitle>현재 관리중인 디스펜서</DispenserTitle>
-              <DispenserName>{userData?.name || "사용자"}</DispenserName>
+              <DispenserName>
+                {patientData?.dispenserModelName || "디스펜서 정보 없음"}
+              </DispenserName>
             </DispenserInfo>
           </DispenserBanner>
           <MenuCategory>등록</MenuCategory>
-          <MenuItemWithClose href="/today">
+          <MenuItemWithClose href="/home">
             오늘 복약 현황
             <IoChevronForward />
           </MenuItemWithClose>
