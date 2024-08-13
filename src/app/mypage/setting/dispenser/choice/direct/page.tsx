@@ -1,5 +1,7 @@
-function DirectPage() {
-  return <div>DirectPage</div>;
+import DirectPage from "@/components/dispenser/DirectPage";
+
+function page() {
+  return <DirectPage />;
 }
 
-export default DirectPage;
+export default page;

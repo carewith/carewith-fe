@@ -36,7 +36,9 @@ function QRPage() {
             priority
           />
         </ImageFlex>
-        <UnderlinedText onClick={() => router.push("/mypage/setting/cs")}>
+        <UnderlinedText
+          onClick={() => router.push("/mypage/setting/dispenser/choice/direct")}
+        >
           코드 직접 입력하기
         </UnderlinedText>
       </QRPageWrapper>

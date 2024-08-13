@@ -1,15 +1,18 @@
 "use client";
 
 import { getFCMToken, initializeFCM } from "@/firebase";
-import { registFcmToken } from "@/service/fcm";
 import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { registFcmToken } from "@/service/fcm";
 
 function FCMComponent() {
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     const initializeFCMAndRegister = async () => {
-      const hasFcmToken = localStorage.getItem("hasFcmToken") === "true";
+      const hasFcmToken = searchParams.get("hasFcmToken") === "false";
 
-      if (!hasFcmToken) {
+      if (hasFcmToken) {
         try {
           // FCM 초기화 및 토큰 가져오기
           await initializeFCM();
@@ -19,19 +22,18 @@ function FCMComponent() {
 
           if (token) {
             await registFcmToken(token);
-            localStorage.setItem("hasFcmToken", "true");
             console.log("FCM 토큰이 서버에 등록되었습니다.");
           }
         } catch (error) {
           console.error("FCM 토큰 등록 실패:", error);
         }
       } else {
-        console.log("FCM 토큰이 이미 등록되어 있습니다.");
+        console.log("FCM 토큰이 이미 등록되어 있거나 필요하지 않습니다.");
       }
     };
 
     initializeFCMAndRegister();
-  }, []);
+  }, [searchParams]);
 
   return null;
 }
