@@ -100,6 +100,11 @@ const ModalButton = styled.button`
   }
 `;
 
+const LogoText = styled.h4`
+  font-size: 26px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.grey.grey01};
+`;
 const ModalAlert = styled.div`
   background: #fff;
   border: 1px solid ${({ theme }) => theme.colors.grey.grey03};
@@ -169,13 +174,14 @@ const Header = () => {
           )}
 
           {!isEditPath && (
-            <Image
-              src={"/images/Carewith_logo.png"}
-              alt="logo"
-              width={30}
-              height={30}
-              onClick={() => router.push("/home")}
-            />
+            // <Image
+            //   src={"/images/Carewith_logo.png"}
+            //   alt="logo"
+            //   width={30}
+            //   height={30}
+            //   onClick={() => router.push("/home")}
+            // />
+            <LogoText id="logo">Carewith</LogoText>
           )}
         </LogoContainer>
         {!isEditPath && (
