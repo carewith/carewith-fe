@@ -7,7 +7,7 @@ import { Description } from "./ChoicePage";
 import QrScanner from "./QrScanner";
 import { useRouter } from "next/navigation";
 
-function QRPage() {
+function DirectPage() {
   const router = useRouter();
   return (
     <SettingWhiteContainer>
@@ -43,7 +43,7 @@ function QRPage() {
     </SettingWhiteContainer>
   );
 }
-export default QRPage;
+export default DirectPage;
 
 const QRPageWrapper = styled.div`
   display: flex;

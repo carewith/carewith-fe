@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styled from "styled-components";
-
+import "../firebase";
 const LoginContainer = styled.div`
   position: relative;
   height: 100vh;

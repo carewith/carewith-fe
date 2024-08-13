@@ -108,7 +108,7 @@ export default function QrScanner() {
           if (err) qrErr(err);
         }}
         constraints={{ facingMode: "environment" }}
-        containerStyle={{ width: "400px", height: "400px" }}
+        containerStyle={{ width: "300px", height: "300px" }}
       />
       <div>
         <IconWrapper>
