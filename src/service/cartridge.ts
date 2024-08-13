@@ -17,6 +17,7 @@ export type Cartridge = {
   dispenserId: string | null,
   drugId: number,
   reminderSoundId: number
+  since:string
 }
 export type Schedule = {
     dayOfWeek:string,

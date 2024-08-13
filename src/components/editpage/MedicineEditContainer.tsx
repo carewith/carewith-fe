@@ -113,7 +113,7 @@ const InfoRow = styled.div`
   }
 `;
 
-const Memo = styled.textarea`
+export const Memo = styled.textarea`
   width: 100%;
   font-size: 12px;
   color: ${({ theme }) => theme.colors.grey.grey02};
@@ -128,11 +128,11 @@ const Divider = styled.hr`
   margin: 1rem 0;
 `;
 
-const InfoSection = styled.div`
+export const InfoSection = styled.div`
   font-size: 14px;
 `;
 
-const InfoSectionRow = styled.div`
+export const InfoSectionRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;

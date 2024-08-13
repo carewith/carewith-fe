@@ -1,6 +1,11 @@
 "use client";
 import styled from "styled-components";
 import TodayMediblockList from "./MediblockList";
+import {
+  getDispenserId,
+  getMainDispenser,
+  registDispenser,
+} from "@/service/dispenser";
 
 const ContentContainer = styled.div`
   width: 100%;
@@ -25,6 +30,17 @@ const Title = styled.h1`
 `;
 
 const Content = () => {
+  const test = async () => {
+    // const response = await registDispenser("MzcwNTU", {
+    //   name: "TESTING",
+    //   location: "집",
+    //   volume: 60,
+    // });
+    const response = await getMainDispenser();
+    console.log(response);
+  };
+
+  test();
   return (
     <ContentContainer>
       <Title>금일 복용 약 목록</Title>

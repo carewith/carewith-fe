@@ -4,12 +4,7 @@ import styled from "styled-components";
 import MedicineCard from "./MedicineCard";
 import AddButton from "./AddButton";
 import { IoSettingsOutline } from "react-icons/io5";
-import { StepDescription } from "./add/RegisterAddPage.styles";
-import {
-  getAllCatridge,
-  TodayList,
-  TodayListResponse,
-} from "@/service/cartridge";
+import { getAllCatridge, TodayList } from "@/service/cartridge";
 
 const MedicineRegisterPageContainer = styled.div`
   display: flex;
@@ -55,6 +50,7 @@ const MedicineRegisterPage = () => {
       {medicines.map((medicine) => (
         <MedicineCard
           key={medicine.cartridgeId}
+          cartridgeId={medicine.cartridgeId}
           drugImage={medicine.drugImage}
           drugName={medicine.drugName}
           expectedTime={medicine.expectedTime}

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { FaChevronRight, FaRegClock } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 interface StatusProps {
   status: string;
@@ -102,6 +103,7 @@ interface MedicineCardProps {
   expectedDayOfWeek: string | null;
   cartridgeNumber: number;
   drugDescription: string;
+  cartridgeId: number;
 }
 
 export const formatDayOfWeek = (day: string | null): string => {
@@ -121,11 +123,13 @@ const MedicineCard: React.FC<MedicineCardProps> = ({
   drugImage,
   drugName,
   expectedTime,
+  cartridgeId,
   status,
   expectedDayOfWeek,
   cartridgeNumber,
   drugDescription,
 }) => {
+  const router = useRouter();
   const isToday = status !== "복용 정보 없음" && !expectedDayOfWeek;
   const formattedDay = formatDayOfWeek(expectedDayOfWeek);
   const formattedTime = expectedTime.slice(0, 5);
@@ -153,7 +157,7 @@ const MedicineCard: React.FC<MedicineCardProps> = ({
       <TopSection>
         <MedicineImage src={drugImage} alt={drugName} />
         <MedicineTitle>{drugName}</MedicineTitle>
-        <ChevronIcon />
+        <ChevronIcon onClick={() => router.push(`/cartridge/${cartridgeId}`)} />
       </TopSection>
       <BottomSection>
         <InfoSection>

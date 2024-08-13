@@ -206,21 +206,32 @@ export const ButtonGrid = styled.div`
   gap: 0.5rem;
   margin: 1rem 0;
 `;
-export const NumberButton = styled.button<{ disabled: boolean }>`
+export const NumberButton = styled.button<{
+  disabled: boolean;
+  isSelected: boolean;
+}>`
   padding: 1rem;
   font-size: 17px;
   min-height: 70px;
-  background-color: ${({ disabled, theme }) =>
-    disabled ? "#e0e0e0" : "white"};
-  border: 1px solid ${({ disabled }) => (disabled ? "transparent" : "#d9d9d9")};
-  color: ${({ disabled }) => (disabled ? "#a0a0a0" : "#d9d9d9")};
+  background-color: ${({ disabled, isSelected, theme }) =>
+    disabled ? "#e0e0e0" : isSelected ? theme.colors.primary.blue01 : "white"};
+  border: 1px solid
+    ${({ disabled, isSelected }) =>
+      disabled ? "transparent" : isSelected ? "transparent" : "#d9d9d9"};
+  color: ${({ disabled, isSelected }) =>
+    disabled ? "#a0a0a0" : isSelected ? "white" : "#000000"};
   border-radius: 12px;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 
   &:hover {
-    background-color: ${({ disabled, theme }) =>
-      disabled ? "#e0e0e0" : theme.colors.primary.blue02};
-    color: ${({ disabled }) => (disabled ? "#a0a0a0" : "#d9d9d9")};
+    background-color: ${({ disabled, isSelected, theme }) =>
+      disabled
+        ? "#e0e0e0"
+        : isSelected
+        ? theme.colors.primary.blue01
+        : theme.colors.primary.blue02};
+    color: ${({ disabled, isSelected }) =>
+      disabled ? "#a0a0a0" : isSelected ? "white" : "white"};
   }
 `;
 
@@ -321,4 +332,63 @@ export const AddAlarmButton = styled.button`
   font-weight: 400;
   width: 100%;
   text-align: center;
+`;
+
+export const CombineResultContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 0.5rem;
+`;
+interface CombineResultButtonProps {
+  isCombinable: boolean;
+}
+
+export const CombineResultButton = styled.div<CombineResultButtonProps>`
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  background-color: ${({ isCombinable, theme }) =>
+    isCombinable
+      ? theme.colors.primary.background
+      : theme.colors.alert.background};
+  color: ${({ isCombinable, theme }) =>
+    isCombinable ? theme.colors.primary.blue02 : theme.colors.alert.red};
+`;
+
+interface CombineResultTextProps {
+  type: "possible" | "impossible";
+}
+interface CombineResultTitleProps {
+  type: "possible" | "impossible";
+}
+
+export const CombineResultText = styled.p<CombineResultTextProps>`
+  font-size: 14px;
+  color: ${({ type }) => (type === "possible" ? "green" : "red")};
+  margin: 0;
+`;
+
+export const CombineResultTitle = styled.h4<CombineResultTitleProps>`
+  font-size: 16px;
+  margin: 0 0 0.5rem 0;
+  color: ${({ type }) => (type === "possible" ? "green" : "red")};
+`;
+
+export const CautionText = styled.p`
+  color: black;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+`;
+
+export const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
 `;

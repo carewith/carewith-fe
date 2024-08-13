@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoChevronForward } from "react-icons/io5"; // 추가
 import { useRouter } from "next/navigation";
 import {
   Container,
@@ -39,6 +39,12 @@ import {
   CloseButton,
   AddAlarmButton,
   RoutingButton,
+  CombineResultText,
+  CombineResultTitle,
+  LoadingContainer,
+  CombineResultContainer,
+  CombineResultButton,
+  CautionText,
 } from "@/components/registpage/add/RegisterAddPage.styles";
 import AddedMedicines from "@/components/registpage/search/AddedMedicines";
 import SearchResults from "@/components/registpage/search/SearchResults";
@@ -46,13 +52,18 @@ import NextButton from "@/components/registpage/search/NextButton";
 import { useDrugStore, useSearchStore } from "@/store/drugStore";
 import {
   CartirdgeWithSheduleWithOutTerm,
-  Schedule,
   registCartridgeWithSchedule,
-  getUsingCartridge, // Import the function
+  getUsingCartridge,
   UsingCartridge,
 } from "@/service/cartridge";
 import TimePicker from "@/components/util/TimePicker";
 import { combineMedicine, CombineResponse } from "@/service/ai";
+import { ClipLoader } from "react-spinners";
+import { InfoSectionRow } from "@/components/mypage/myPage.styles";
+import { InfoSection, Memo } from "@/components/editpage/MedicineEditContainer";
+import PeriodicityModal from "@/components/editpage/PeriodicityModal";
+import { FaChevronRight } from "react-icons/fa6";
+import CalendarModal from "@/components/registpage/add/CalendarModal";
 
 type Medicine = {
   id: number;
@@ -75,12 +86,22 @@ const SearchRegisterPage = () => {
   const [dosePerDay, setDosePerDay] = useState<number>(3);
   const [totalDoseDays, setTotalDoseDays] = useState<number>(7);
   const [drugRemains, setDrugRemains] = useState<number>(12);
-  const [alarms, setAlarms] = useState<Schedule[]>([]);
+  const [alarms, setAlarms] = useState<{ time: string }[]>([]);
   const [isClosing, setIsClosing] = useState(false);
   const [combineResult, setCombineResult] = useState<CombineResponse | null>(
     null
   );
   const [usingCartridges, setUsingCartridges] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [startDate, setStartDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+  const [repeat, setRepeat] = useState(true);
+  const [reminderSound, setReminderSound] = useState(1);
+  const [dates, setDates] = useState<string[]>(["MON", "WED", "FRI"]);
+  const [isPeriodicityModalOpen, setIsPeriodicityModalOpen] = useState(false);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const [memo, setMemo] = useState("");
 
   useEffect(() => {
     if (step === 2) {
@@ -98,8 +119,26 @@ const SearchRegisterPage = () => {
     }
   }, [step]);
 
-  const handleAddMedicine = (medicine: Medicine) => {
+  const handleAddMedicine = async (medicine: Medicine) => {
     setSelectedMedicine(medicine);
+    setIsLoading(true);
+
+    const updatedMedicines = [...addedMedicines, medicine];
+    const drugNames = updatedMedicines.map((med) => med.name);
+
+    try {
+      const result = await combineMedicine(
+        localStorage.getItem("mainDispenser"),
+        drugNames
+      );
+      setCombineResult(result);
+    } catch (error) {
+      console.error("Error checking drug combination:", error);
+      setCombineResult(null);
+    } finally {
+      setIsLoading(false);
+    }
+
     setStep(1);
   };
 
@@ -115,26 +154,50 @@ const SearchRegisterPage = () => {
     setStep(step - 1);
   };
 
+  const handleMemoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMemo(e.target.value);
+  };
+
+  const handleCartridgeNext = () => {
+    if (cartridgeNumber === null) {
+      alert("카트리지 번호를 선택해주세요.");
+      return;
+    }
+
+    if (usingCartridges.length === 6) {
+      alert("모든 카트리지가 사용 중입니다. 복용약 목록으로 이동합니다.");
+      router.push("/register");
+      return;
+    }
+
+    handleNextStep();
+  };
+
   const handleCompleteRegistration = async () => {
     if (selectedMedicine && cartridgeNumber) {
+      const schedules = dates.flatMap((date) =>
+        alarms.map((alarm) => ({
+          dayOfWeek: date,
+          time: convertTo24HourFormat(alarm.time),
+        }))
+      );
+
       const registData: CartirdgeWithSheduleWithOutTerm = {
         number: cartridgeNumber,
-        memo: "aa",
+        memo: memo,
         dosage,
         doesPerDay: dosePerDay,
         totalDoseDays,
         drugRemains,
-        repeatable: true,
+        repeatable: repeat,
         dispenserId: localStorage.getItem("mainDispenser"),
         drugId: selectedMedicine.id,
-        reminderSoundId: 1,
-        schedules: alarms.map((alarm) => ({
-          dayOfWeek: "MON",
-          time: convertTo24HourFormat(alarm.time),
-        })),
+        reminderSoundId: reminderSound,
+        schedules: schedules,
+        since: startDate,
       };
       await registCartridgeWithSchedule(registData);
-      setStep(6);
+      setStep(7);
 
       setTimeout(() => {
         setIsClosing(true);
@@ -190,11 +253,11 @@ const SearchRegisterPage = () => {
     }
   };
 
-  const formatTimeToAMPM = (time: string): string => {
-    const [hour, minute] = time.split(":").map(Number);
-    const period = hour >= 12 ? "오후" : "오전";
-    const formattedHour = hour % 12 || 12;
-    return `${period} ${formattedHour}:${minute.toString().padStart(2, "0")}`;
+  const truncateCaution = (caution: string): string => {
+    const sentences = caution.split(".");
+    return sentences.length > 1
+      ? `${sentences[0]}. ${sentences[1]}.`
+      : `${sentences[0]}.`;
   };
 
   const convertTo24HourFormat = (time: string): string => {
@@ -213,17 +276,32 @@ const SearchRegisterPage = () => {
   };
 
   const handleTimeSelection = (formattedTime: string) => {
-    const newAlarm = { dayOfWeek: "MON", time: formattedTime };
-    setAlarms([...alarms, newAlarm]);
-    setStep(4);
+    setAlarms([...alarms, { time: formattedTime }]);
+    setStep(5);
   };
 
   const handleAddAlarm = () => {
-    setStep(5);
+    setStep(6);
   };
 
   const handleRemoveAlarm = (index: number) => {
     setAlarms(alarms.filter((_, i) => i !== index));
+  };
+
+  const handlePeriodicityChange = (newDates: string[]) => {
+    setDates(newDates);
+  };
+
+  const handleCalendarOpen = () => {
+    setIsCalendarModalOpen(true);
+  };
+
+  const handleCalendarClose = (selectedDate: string | null = null) => {
+    if (selectedDate) {
+      setStartDate(selectedDate);
+    }
+    console.log(selectedDate);
+    setIsCalendarModalOpen(false);
   };
 
   return (
@@ -278,9 +356,6 @@ const SearchRegisterPage = () => {
                     <MedicineDescription>
                       {selectedMedicine.description}
                     </MedicineDescription>
-                    <NextStepButton onClick={handleCombineCheck} fullWidth>
-                      혼용 적합성 확인
-                    </NextStepButton>
                   </>
                 ) : step === 6 ? (
                   <>
@@ -309,7 +384,44 @@ const SearchRegisterPage = () => {
             <StepContainer>
               {step === 1 && (
                 <StepContent key={step}>
-                  <NextStepButton onClick={handleNextStep} fullWidth>
+                  {isLoading ? (
+                    <LoadingContainer>
+                      <h4 style={{ fontSize: "14px", marginBottom: "10px" }}>
+                        병용 검사 중
+                      </h4>
+                      <ClipLoader
+                        color={"#5A81FA"}
+                        loading={isLoading}
+                        size={50}
+                      />
+                    </LoadingContainer>
+                  ) : (
+                    combineResult && (
+                      <CombineResultContainer>
+                        <CombineResultButton
+                          isCombinable={combineResult.isCombinable}
+                        >
+                          {combineResult.isCombinable
+                            ? "병용 가능"
+                            : "병용 주의"}
+                        </CombineResultButton>
+                        <span style={{ fontSize: "11px", color: "#808AAB" }}>
+                          AI를 이용해 검사한 결과로 자세한 내용은 의사와
+                          상담하세요.
+                        </span>
+                        {!combineResult.isCombinable && (
+                          <CautionText>
+                            {truncateCaution(combineResult.caution)}
+                          </CautionText>
+                        )}
+                      </CombineResultContainer>
+                    )
+                  )}
+                  <NextStepButton
+                    onClick={handleNextStep}
+                    fullWidth
+                    disabled={isLoading}
+                  >
                     다음
                   </NextStepButton>
                 </StepContent>
@@ -326,12 +438,13 @@ const SearchRegisterPage = () => {
                         key={num}
                         onClick={() => setCartridgeNumber(num)}
                         disabled={usingCartridges.includes(num)}
+                        isSelected={cartridgeNumber === num}
                       >
                         {num}
                       </NumberButton>
                     ))}
                   </ButtonGrid>
-                  <NextStepButton onClick={handleNextStep} fullWidth>
+                  <NextStepButton onClick={handleCartridgeNext} fullWidth>
                     다음
                   </NextStepButton>
                 </StepContent>
@@ -414,6 +527,55 @@ const SearchRegisterPage = () => {
               )}
               {step === 4 && (
                 <StepContent key={step}>
+                  <StepTitle>복용 상세 설정</StepTitle>
+                  <InfoSection>
+                    <InfoSectionRow
+                      onClick={() => setIsPeriodicityModalOpen(true)}
+                    >
+                      <span>주기</span>
+                      <span>
+                        {dates.join(", ")} <FaChevronRight color="#a9adb4" />
+                      </span>
+                    </InfoSectionRow>
+                    <InfoSectionRow>
+                      <span>복용 시작일</span>
+                      <span
+                        onClick={handleCalendarOpen}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {startDate} <IoChevronForward />
+                      </span>
+                    </InfoSectionRow>
+                    <InfoSectionRow>
+                      <span>반복알림</span>
+                      <span onClick={() => setRepeat(!repeat)}>
+                        <input type="checkbox" checked={repeat} readOnly />
+                        <div className="toggle-switch"></div>
+                      </span>
+                    </InfoSectionRow>
+                  </InfoSection>
+                  <InfoSection>
+                    <h2 style={{ fontSize: "14px", margin: "1rem 0 0.5rem 0" }}>
+                      메모
+                    </h2>
+                    <Memo
+                      value={memo}
+                      onChange={(e) => setMemo(e.target.value)}
+                    />
+                  </InfoSection>
+                  <ButtonContainer>
+                    <PreviousStepButton onClick={handlePreviousStep}>
+                      이전
+                    </PreviousStepButton>
+                    <Spacer />
+                    <NextStepButton onClick={handleNextStep}>
+                      다음
+                    </NextStepButton>
+                  </ButtonContainer>
+                </StepContent>
+              )}
+              {step === 5 && (
+                <StepContent key={step}>
                   <StepTitle>알람 설정</StepTitle>
                   <StepDescription>
                     알람 설정을 추가할 수 있습니다.
@@ -421,7 +583,7 @@ const SearchRegisterPage = () => {
                   <ScrollableAlarmContainer>
                     {alarms.map((alarm, index) => (
                       <AlarmItem key={index}>
-                        <AlarmTime>{`${alarm.dayOfWeek} ${alarm.time}`}</AlarmTime>
+                        <AlarmTime>{alarm.time}</AlarmTime>
                         <CloseButton onClick={() => handleRemoveAlarm(index)}>
                           <IoClose size={20} />
                         </CloseButton>
@@ -442,7 +604,7 @@ const SearchRegisterPage = () => {
                   </ButtonContainer>
                 </StepContent>
               )}
-              {step === 5 && (
+              {step === 6 && (
                 <StepContent key={step}>
                   <StepTitle>알람 시간 설정</StepTitle>
                   <div>
@@ -451,7 +613,7 @@ const SearchRegisterPage = () => {
                   </div>
                 </StepContent>
               )}
-              {step === 6 && (
+              {step === 7 && (
                 <StepContent key={step}>
                   <RoutingButton onClick={handleCloseModal} fullWidth>
                     추가 등록하기
@@ -465,6 +627,16 @@ const SearchRegisterPage = () => {
           </ModalContainer>
         </ModalOverlay>
       )}
+      <PeriodicityModal
+        isOpen={isPeriodicityModalOpen}
+        onClose={() => setIsPeriodicityModalOpen(false)}
+        onSave={handlePeriodicityChange}
+        initialSelectedDays={dates}
+      />
+      <CalendarModal
+        isOpen={isCalendarModalOpen}
+        onClose={handleCalendarClose}
+      />
     </Container>
   );
 };

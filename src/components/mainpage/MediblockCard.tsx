@@ -13,21 +13,21 @@ const Card = styled.div`
   box-shadow: 0 6px 8px rgba(197, 204, 229, 0.12);
   padding: 1rem;
   width: 100%;
-  flex: 1;
+  height: 200px; // 고정 높이 설정
+  display: flex;
+  flex-direction: column;
 `;
 
 const ImageContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 const Image = styled.img`
-  max-width: 60px;
-  max-height: 60px;
-  width: 100%;
-  height: auto;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 10px;
 `;
@@ -36,6 +36,12 @@ const Title = styled.h2`
   font-size: 17px;
   font-weight: 500;
   margin: 0.5rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; // 최대 2줄까지 표시
+  -webkit-box-orient: vertical;
+  flex-shrink: 0;
 `;
 
 const Time = styled.p<{ status: string }>`
@@ -50,6 +56,7 @@ const Time = styled.p<{ status: string }>`
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  flex-shrink: 0;
 `;
 
 const Status = styled.p<{ status: string }>`
@@ -70,7 +77,7 @@ const Status = styled.p<{ status: string }>`
   width: 100%;
   text-align: center;
   border-radius: 20px;
-  display: inline-block;
+  margin-top: auto; // 하단에 배치
 `;
 
 const MediblockCard: React.FC<MediblockCardProps> = ({ cartridge }) => {

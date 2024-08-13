@@ -14,6 +14,8 @@ import {
 import { RxHamburgerMenu } from "react-icons/rx";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Image from "next/image";
+import Sidebar from "./Sidebar";
+import { deleteCartridge } from "@/service/cartridge";
 
 const HeaderContainer = styled.header`
   width: 100%;
@@ -112,6 +114,7 @@ const ModalAlert = styled.div`
 const Header = () => {
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -119,7 +122,7 @@ const Header = () => {
   const isMediblock = pathname.startsWith("/cartridge");
   const isEditCompletePage = pathname.endsWith("/edit/complete");
   const isEditPage = pathname.endsWith("/edit");
-
+  const isSettingPage = pathname.startsWith("/mypage/setting");
   const isEditPath = pathname.includes("/edit");
 
   const handleEditClick = () => {
@@ -132,9 +135,23 @@ const Header = () => {
       router.push(`/cartridge/${slug}/edit`);
     }
   };
-
+  const handleDeleteClick = async () => {
+    const slug = pathname.split("/")[2];
+    if (window.confirm("정말로 이 카트리지를 삭제하시겠습니까?")) {
+      try {
+        await deleteCartridge(slug);
+        setShowModal(false);
+        router.push("/");
+      } catch (error) {
+        console.error("Error deleting cartridge:", error);
+        alert("카트리지 삭제 중 오류가 발생했습니다.");
+      }
+    }
+  };
   const isAuthPage = pathname === "/login" || pathname === "/signup";
-
+  if (isSettingPage) {
+    return null;
+  }
   if (isAuthPage) {
     return null;
   }
@@ -144,15 +161,13 @@ const Header = () => {
       <HeaderContainer>
         <LogoContainer>
           {isEditPath ? (
-            // Only show the back icon when on an edit page
             <FaChevronLeft size={24} onClick={() => router.back()} />
           ) : isHomePage || isMediblock ? (
-            <RxHamburgerMenu size={24} />
+            <RxHamburgerMenu size={24} onClick={() => setShowSidebar(true)} />
           ) : (
             <FaChevronLeft size={24} onClick={() => router.back()} />
           )}
 
-          {/* Hide the logo when on an edit page */}
           {!isEditPath && (
             <Image
               src={"/images/Carewith_logo.png"}
@@ -189,7 +204,7 @@ const Header = () => {
             <ModalButton onClick={handleEditClick}>
               <FaPencilAlt /> 편집
             </ModalButton>
-            <ModalButton>
+            <ModalButton onClick={handleDeleteClick}>
               <FaRegTrashAlt /> 삭제
             </ModalButton>
           </Modal>
@@ -203,6 +218,7 @@ const Header = () => {
           </Modal>
         </ModalOverlay>
       )}
+      <Sidebar isOpen={showSidebar} onClose={() => setShowSidebar(false)} />
     </>
   );
 };
