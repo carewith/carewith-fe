@@ -364,7 +364,7 @@ const MedicineEditDetail: React.FC<MedicineEditDetailProps> = ({
         updateData
       );
       console.log("Save successful:", result);
-      router.push(`/cartridge/${slug}`);
+      router.push(`/register`);
     } catch (error) {
       console.error("Save failed:", error);
     }

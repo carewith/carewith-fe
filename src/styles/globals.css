@@ -17,7 +17,17 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'MtBold';
+  src: url('/fonts/mtbold.ttf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
 
+
+#logo{
+    font-family: 'Mtbold';
+}
 *{
     box-sizing: border-box;
     margin: 0;

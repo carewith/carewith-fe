@@ -100,6 +100,11 @@ const ModalButton = styled.button`
   }
 `;
 
+const LogoText = styled.h4`
+  font-size: 26px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.grey.grey01};
+`;
 const ModalAlert = styled.div`
   background: #fff;
   border: 1px solid ${({ theme }) => theme.colors.grey.grey03};
@@ -143,7 +148,7 @@ const Header = () => {
       try {
         await deleteCartridge(slug);
         setShowModal(false);
-        router.push("/home");
+        router.push("/register");
       } catch (error) {
         console.error("Error deleting cartridge:", error);
         alert("카트리지 삭제 중 오류가 발생했습니다.");
@@ -169,13 +174,16 @@ const Header = () => {
           )}
 
           {!isEditPath && (
-            <Image
-              src={"/images/Carewith_logo.png"}
-              alt="logo"
-              width={30}
-              height={30}
-              onClick={() => router.push("/home")}
-            />
+            // <Image
+            //   src={"/images/Carewith_logo.png"}
+            //   alt="logo"
+            //   width={30}
+            //   height={30}
+            //   onClick={() => router.push("/home")}
+            // />
+            <LogoText id="logo" onClick={() => router.push("/home")}>
+              Carewith
+            </LogoText>
           )}
         </LogoContainer>
         {!isEditPath && (
