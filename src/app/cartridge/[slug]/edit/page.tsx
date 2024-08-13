@@ -11,12 +11,14 @@ export default function MediblockEditPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const params = useParams();
+  console.log("params", params);
 
   useEffect(() => {
     const fetchMedicineData = async () => {
       try {
-        const cartridgeId = params.slug?.[0] || "";
-        const data = await getInfoCartridge(cartridgeId);
+        const cartridgeId = params.slug || "";
+        const data = await getInfoCartridge(params.slug as string);
+        console.log(data);
         setMedicineData(data);
       } catch (error) {
         console.error("Failed to fetch medicine data:", error);
