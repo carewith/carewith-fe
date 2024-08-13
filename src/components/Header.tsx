@@ -118,7 +118,9 @@ const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isHomePage = pathname === "/";
+  // 홈 페이지와 루트 페이지를 위한 추가 조건
+  const isHomePage = pathname === "/home";
+  const isRootPage = pathname === "/";
   const isMediblock = pathname.startsWith("/cartridge");
   const isEditCompletePage = pathname.endsWith("/edit/complete");
   const isEditPage = pathname.endsWith("/edit");
@@ -135,24 +137,23 @@ const Header = () => {
       router.push(`/cartridge/${slug}/edit`);
     }
   };
+
   const handleDeleteClick = async () => {
     const slug = pathname.split("/")[2];
     if (window.confirm("정말로 이 카트리지를 삭제하시겠습니까?")) {
       try {
         await deleteCartridge(slug);
         setShowModal(false);
-        router.push("/");
+        router.push("/home");
       } catch (error) {
         console.error("Error deleting cartridge:", error);
         alert("카트리지 삭제 중 오류가 발생했습니다.");
       }
     }
   };
+
   const isAuthPage = pathname === "/login" || pathname === "/signup";
-  if (isSettingPage) {
-    return null;
-  }
-  if (isAuthPage) {
+  if (isSettingPage || isAuthPage || isRootPage) {
     return null;
   }
 
@@ -174,7 +175,7 @@ const Header = () => {
               alt="logo"
               width={30}
               height={30}
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/home")}
             />
           )}
         </LogoContainer>

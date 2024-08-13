@@ -2,7 +2,7 @@ import { useRouter } from "next/navigation";
 import { FaChevronLeft } from "react-icons/fa6";
 import styled from "styled-components";
 
-const HeaderContainer = styled.header`
+export const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   padding: 1rem 0;
@@ -10,7 +10,7 @@ const HeaderContainer = styled.header`
   gap: 12px;
 `;
 
-const BackButton = styled.button`
+export const BackButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
@@ -19,7 +19,7 @@ const BackButton = styled.button`
   align-items: center;
 `;
 
-const HeaderTitle = styled.h1`
+export const HeaderTitle = styled.h1`
   font-size: 21px;
   font-weight: 400;
   margin: 0;

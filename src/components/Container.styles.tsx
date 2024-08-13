@@ -9,6 +9,15 @@ export const SettingContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.grey.background};
 `;
 
+export const SettingWhiteContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  height: 100vh;
+  overflow: hidden;
+  background-color: white;
+`;
+
 export const ContentSection = styled.section`
   background-color: white;
   border-radius: 24px;

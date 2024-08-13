@@ -1,6 +1,6 @@
 "use client";
-import { Container } from "@/components/registpage/add/RegisterAddPage.styles";
 import { ClipLoader } from "react-spinners";
+import styled from "styled-components";
 
 export default function Loading() {
   return (
@@ -9,3 +9,12 @@ export default function Loading() {
     </Container>
   );
 }
+export const Container = styled.div`
+  display: flex;
+  width: 100vw;
+  max-width: 768px;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 1.5rem 1rem;
+`;

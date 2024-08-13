@@ -1,11 +1,10 @@
 "use client";
 import styled from "styled-components";
 import TodayMediblockList from "./MediblockList";
-import {
-  getDispenserId,
-  getMainDispenser,
-  registDispenser,
-} from "@/service/dispenser";
+import { getMainDispenser } from "@/service/dispenser";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Modal from "../common/ModalContainer";
 
 const ContentContainer = styled.div`
   width: 100%;
@@ -30,21 +29,42 @@ const Title = styled.h1`
 `;
 
 const Content = () => {
-  const test = async () => {
-    // const response = await registDispenser("MzcwNTU", {
-    //   name: "TESTING",
-    //   location: "집",
-    //   volume: 60,
-    // });
-    const response = await getDispenserId();
-    console.log(response);
+  const [showModal, setShowModal] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchDispenser = async () => {
+      try {
+        const response = await getMainDispenser();
+        localStorage.setItem("dispenserId", response.dispenserId);
+      } catch (error) {
+        console.error("Dispenser not found:", error);
+        setShowModal(true);
+      }
+    };
+
+    fetchDispenser();
+  }, []);
+
+  const handleRegisterDispenser = () => {
+    router.push("/mypage/setting/dispenser/choice");
   };
 
-  test();
   return (
     <ContentContainer>
       <Title>금일 복용 약 목록</Title>
       <TodayMediblockList />
+
+      {showModal && (
+        <Modal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          title="기기 등록 필요"
+          content="복약 관리를 위해 기기 등록이 필요합니다."
+          confirmText="등록하러 가기"
+          onConfirm={handleRegisterDispenser}
+        />
+      )}
     </ContentContainer>
   );
 };

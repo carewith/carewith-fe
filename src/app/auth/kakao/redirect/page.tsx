@@ -26,14 +26,14 @@ const KakaoRedirect = () => {
           localStorage.setItem("accessToken", data.data.accessToken);
           localStorage.setItem("refreshToken", data.data.refreshToken);
 
-          router.push("/");
+          router.push("/home");
         } else {
           console.error("로그인 실패");
           router.push("/login");
         }
       } catch (error) {
         console.error("토큰 요청 중 에러 발생:", error);
-        router.push("/login");
+        router.push("/");
       }
     };
 

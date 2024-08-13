@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import MedicineCard from "./MedicineCard";
 import AddButton from "./AddButton";
-import { IoSettingsOutline } from "react-icons/io5";
 import { getAllCatridge, TodayList } from "@/service/cartridge";
 
 const MedicineRegisterPageContainer = styled.div`
@@ -43,10 +42,7 @@ const MedicineRegisterPage = () => {
 
   return (
     <MedicineRegisterPageContainer>
-      <Header>
-        등록된 약 목록
-        <IoSettingsOutline />
-      </Header>
+      <Header>등록된 약 목록</Header>
       {medicines.map((medicine) => (
         <MedicineCard
           key={medicine.cartridgeId}
