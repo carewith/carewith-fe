@@ -50,7 +50,7 @@ const TodayMediblockList = () => {
   useEffect(() => {
     const fetchTodayList = async () => {
       try {
-        const dispenserId = localStorage.getItem("mainDispenser");
+        const dispenserId = localStorage.getItem("dispenserId");
         const data = await getTodayCatridge(dispenserId);
         setTodayList(data);
       } catch (err) {

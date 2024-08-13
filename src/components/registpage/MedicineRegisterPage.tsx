@@ -29,7 +29,7 @@ const MedicineRegisterPage = () => {
     const fetchMedicines = async () => {
       try {
         const response = await getAllCatridge(
-          localStorage.getItem("mainDispenser") || ""
+          localStorage.getItem("dispenserId") || ""
         );
         setMedicines(response.statuses);
       } catch (error) {
