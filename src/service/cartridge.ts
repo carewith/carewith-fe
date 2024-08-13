@@ -172,3 +172,12 @@ export const getInfoCartridge = async (cartridgeId:string):Promise<DosingSchedul
   const response = await requestWithAuth<DosingSchedule>(config);
   return response;
 }
+
+export const directCartridge = async (cartridgeId:string,amount:number)=> {
+  const config: AxiosRequestConfig = {
+    url: `${process.env.NEXT_API}/cartridge/${cartridgeId}/alarm/manual?amount=${amount}`,
+    method: 'post',
+  };
+  const data = await requestWithAuth(config);
+  return data;
+};

@@ -118,7 +118,6 @@ const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // 홈 페이지와 루트 페이지를 위한 추가 조건
   const isHomePage = pathname === "/home";
   const isRootPage = pathname === "/";
   const isMediblock = pathname.startsWith("/cartridge");
@@ -203,7 +202,7 @@ const Header = () => {
           <Modal onClick={(e) => e.stopPropagation()}>
             <ModalHandle />
             <ModalButton>
-              <FaRegCheckCircle /> 복용
+              <FaRegCheckCircle /> 직접 공급
             </ModalButton>
             <ModalButton onClick={handleEditClick}>
               <FaPencilAlt /> 편집
