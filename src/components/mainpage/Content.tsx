@@ -36,7 +36,7 @@ const Content = () => {
     //   location: "집",
     //   volume: 60,
     // });
-    const response = await getMainDispenser();
+    const response = await getDispenserId();
     console.log(response);
   };
 

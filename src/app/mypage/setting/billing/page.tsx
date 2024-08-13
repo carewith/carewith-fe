@@ -100,6 +100,6 @@ const BottomMessage = styled.p`
   margin-top: 24px;
 `;
 
-export const UnderlinedText = styled.span`
+const UnderlinedText = styled.span`
   text-decoration: underline;
 `;

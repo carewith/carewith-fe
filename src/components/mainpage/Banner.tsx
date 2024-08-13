@@ -6,7 +6,6 @@ import {
   getAsdPerTime,
   DosePerTimes,
   getMainDispenser,
-  ProgressBar,
 } from "@/service/dispenser";
 import styled from "styled-components";
 
@@ -113,7 +112,7 @@ const PillCount = styled.div<{ isNext: boolean }>`
 
 const Banner = () => {
   const [userData, setUserData] = useState<User | null>(null);
-  const [progress, setProgress] = useState<ProgressBar | null>(null);
+  const [progress, setProgress] = useState<any>(null);
   const [dosePerTimes, setDosePerTimes] = useState<DosePerTimes | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -127,10 +126,10 @@ const Banner = () => {
         const mainDispenser = await getMainDispenser();
         console.log("MAINDISPENSER", mainDispenser);
         if (mainDispenser && mainDispenser.dispenserId) {
-          const progressData = await getProgressBar(mainDispenser.id);
+          const progressData = await getProgressBar(mainDispenser.dispenserId);
           setProgress(progressData);
 
-          const doseTimesData = await getAsdPerTime(mainDispenser.id);
+          const doseTimesData = await getAsdPerTime(mainDispenser.dispenserId);
           console.log("HI", doseTimesData);
           setDosePerTimes(doseTimesData);
         }

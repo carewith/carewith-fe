@@ -9,8 +9,8 @@ import {
   IoWalletOutline,
   IoHeadset,
 } from "react-icons/io5";
-import { Divider } from "./mypage/myPage.styles";
-import { NavItem } from "@/app/mypage/page";
+import { Divider, NavItemWrapper, NavText } from "./mypage/myPage.styles";
+
 import { FaArrowsRotate } from "react-icons/fa6";
 import { getUserData, User } from "@/service/userService";
 interface MenuItemWithCloseProps {
@@ -21,6 +21,19 @@ const slideIn = keyframes`
   from { transform: translateX(-100%); }
   to { transform: translateX(0); }
 `;
+
+const NavItem = ({
+  icon: Icon,
+  text,
+}: {
+  icon: React.ElementType;
+  text: string;
+}) => (
+  <NavItemWrapper>
+    <Icon size={24} />
+    <NavText>{text}</NavText>
+  </NavItemWrapper>
+);
 
 const SidebarOverlay = styled.div<{ isOpen: boolean }>`
   position: fixed;

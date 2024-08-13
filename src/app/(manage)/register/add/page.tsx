@@ -330,12 +330,6 @@ const SearchRegisterPage = () => {
           onRemove={handleRemoveMedicine}
         />
       )}
-      <SectionTitle>추가된 약</SectionTitle>
-      <AddedMedicines
-        addedMedicines={addedMedicines}
-        onRemove={handleRemoveMedicine}
-      />
-      <NextButton />
 
       {selectedMedicine && (
         <ModalOverlay onClick={handleCloseModal} isClosing={isClosing}>

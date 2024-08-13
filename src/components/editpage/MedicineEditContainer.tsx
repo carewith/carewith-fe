@@ -345,7 +345,7 @@ const MedicineEditDetail: React.FC<MedicineEditDetailProps> = ({
       }))
     );
 
-    const updateData: PatchCartridgeWithAlarmData = {
+    const updateData: any = {
       number: editData.cartridgeNumber,
       memo: editData.memo,
       dosage: editData.drugDosage,

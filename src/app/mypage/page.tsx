@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { IoChevronForward, IoHeadset, IoWalletOutline } from "react-icons/io5";
 import { FaArrowsRotate } from "react-icons/fa6";
+
 import {
   NavItemWrapper,
   NavText,
@@ -22,7 +23,7 @@ import {
   Container,
 } from "@/components/mypage/myPage.styles";
 
-export const NavItem = ({
+const NavItem = ({
   icon: Icon,
   text,
 }: {
@@ -34,7 +35,6 @@ export const NavItem = ({
     <NavText>{text}</NavText>
   </NavItemWrapper>
 );
-
 const SettingItem = ({ text, href }: { text: string; href: string }) => (
   <Link href={href} passHref>
     <SettingItemWrapper>

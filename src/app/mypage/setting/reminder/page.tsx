@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { SettingHeader } from "@/components/settingPage/SettingHeader";
 import { IoChevronForward, IoInformationCircleOutline } from "react-icons/io5";
 import { useState } from "react";
-import { UnderlinedText } from "../billing/page";
+
 import { useRouter } from "next/navigation";
 
 function ReminderPage() {
@@ -143,4 +143,8 @@ const BottomMessage = styled.p`
   color: ${({ theme }) => theme.colors.grey.grey02};
   text-align: center;
   margin-top: 24px;
+`;
+
+const UnderlinedText = styled.span`
+  text-decoration: underline;
 `;

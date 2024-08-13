@@ -188,7 +188,10 @@ const Header = () => {
             ) : (
               <>
                 <FaRegBell size={24} />
-                <FaRegUserCircle size={24} />
+                <FaRegUserCircle
+                  onClick={() => router.push("/login")}
+                  size={24}
+                />
               </>
             )}
           </IconContainer>

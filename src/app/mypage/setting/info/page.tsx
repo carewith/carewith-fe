@@ -1,7 +1,11 @@
 "use client";
+import {
+  ContentSection,
+  SettingContainer,
+  SettingItem,
+} from "@/components/Container.styles";
 import { SettingHeader } from "@/components/settingPage/SettingHeader";
 import { IoChevronForward } from "react-icons/io5";
-import { ContentSection, SettingContainer, SettingItem } from "../cs/page";
 import styled from "styled-components";
 
 type Props = {};
