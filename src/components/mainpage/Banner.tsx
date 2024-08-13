@@ -17,7 +17,7 @@ const BannerContainer = styled.div`
   top: 0;
   left: 0;
   z-index: -10;
-  background: linear-gradient(to bottom left, #f0f3ff 0%, #6c94e3 100%);
+  background: linear-gradient(to bottom left, #f0f3ff 0%, #cedeff 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -59,63 +59,75 @@ const ProgressContainer = styled.div`
 const ProgressBar = styled.div`
   width: 100%;
   height: 40px;
-  background-color: ${({ theme }) => theme.colors.grey.background};
-  border-radius: 32px;
+  background-color: #f4f5f9;
+  border-radius: 50px;
   overflow: hidden;
   position: relative;
   display: flex;
+  align-items: center;
+  justify-content: center;
 `;
-
 const ProgressSegment = styled.div<{ width: string }>`
   height: 100%;
-  background-color: ${({ theme }) => theme.colors.primary.blue02};
+  background: linear-gradient(to right, #3d49ff 0%, #5a81fa 100%);
   width: ${({ width }) => width};
+  position: absolute;
+  left: 0;
 `;
 
 const TimeMarks = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 `;
 
-const TimeMark = styled.div<{ isNext: boolean }>`
+const TimeMark = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 14px;
-  color: ${({ isNext, theme }) =>
-    isNext ? theme.colors.primary.blue02 : theme.colors.grey.grey02};
-
-  &::after {
-    content: "•";
-    color: ${({ isNext, theme }) =>
-      isNext ? theme.colors.primary.blue02 : "transparent"};
-    font-size: 24px;
-    margin-top: 4px;
-  }
-`;
-
-const PillCount = styled.div<{ isNext: boolean }>`
-  width: 20px;
-  height: 20px;
-  background-color: ${({ isNext, theme }) =>
-    isNext ? theme.colors.primary.blue02 : theme.colors.grey.grey02};
-  color: white;
   font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  margin-top: 4px;
+  color: #333;
 `;
 
+const PillCount = styled.div`
+  display: flex;
+  margin-top: 0.5rem;
+`;
+
+const Pill = styled.div<{ status: "incomplete" | "complete" | "expected" }>`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 2px;
+  background-color: ${({ status }) =>
+    status === "incomplete"
+      ? "red"
+      : status === "complete"
+      ? "blue"
+      : "#E0E0E0"};
+`;
+const ProgressText = styled.span`
+  color: white;
+  z-index: 1;
+  font-size: 16px;
+`;
+
+const NoScheduleText = styled.span`
+  color: ${({ theme }) => theme.colors.grey.grey02};
+  font-size: 13px;
+  margin-top: 8px;
+`;
 const Banner = () => {
   const [userData, setUserData] = useState<User | null>(null);
   const [progress, setProgress] = useState<any>(null);
   const [dosePerTimes, setDosePerTimes] = useState<DosePerTimes | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const formatTime = (time: string) => {
+    const [hours, minutes] = time.split(":");
+    const hour = parseInt(hours);
+    return `${hour > 12 ? "오후 " + (hour - 12) : "오전 " + hour}:${minutes}`;
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -156,9 +168,9 @@ const Banner = () => {
       : typeof progress?.percent === "string" &&
         !isNaN(parseFloat(progress.percent))
       ? parseFloat(progress.percent)
-      : 0;
+      : NaN;
 
-  const doses = dosePerTimes?.dosePerTime || [];
+  const doses = dosePerTimes?.dosePerTimes || [];
   const nextDose = doses.find((dose) => dose.incomplete > 0);
 
   return (
@@ -171,20 +183,38 @@ const Banner = () => {
       {nextDose && <NextDoseText>다음 복용: {nextDose.time}</NextDoseText>}
       <ProgressContainer>
         <ProgressBar>
-          <ProgressSegment width={`${progressPercent}%`} />
+          {!isNaN(progressPercent) ? (
+            <>
+              <ProgressSegment width={`${progressPercent}%`} />
+              <ProgressText>{progressPercent}%</ProgressText>
+            </>
+          ) : (
+            <ProgressText>!</ProgressText>
+          )}
         </ProgressBar>
+        {isNaN(progressPercent) && (
+          <NoScheduleText>예정된 복약일정이 없습니다.</NoScheduleText>
+        )}
         <TimeMarks>
-          {doses.map((dose, index) => {
-            const isNext = dose.incomplete > 0;
-            return (
-              <TimeMark key={index} isNext={isNext}>
-                {dose.time}
-                <PillCount isNext={isNext}>
-                  {dose.complete + dose.incomplete}
-                </PillCount>
-              </TimeMark>
-            );
-          })}
+          {dosePerTimes?.dosePerTimes.map((dose, index) => (
+            <TimeMark key={index}>
+              {formatTime(dose.time)}
+              <PillCount>
+                {[...Array(dose.expected)].map((_, i) => (
+                  <Pill
+                    key={i}
+                    status={
+                      i < dose.complete
+                        ? "complete"
+                        : i < dose.complete + dose.incomplete
+                        ? "incomplete"
+                        : "expected"
+                    }
+                  />
+                ))}
+              </PillCount>
+            </TimeMark>
+          ))}
         </TimeMarks>
       </ProgressContainer>
     </BannerContainer>

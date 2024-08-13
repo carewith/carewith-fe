@@ -29,7 +29,7 @@ export type AsdType= {
     expected:number;
 }
 export type DosePerTimes = {
-    dosePerTime :AsdType[]
+    dosePerTimes :AsdType[]
 }
 
 export const getDispenserId = async (): Promise<Dispenser> => {
@@ -103,3 +103,26 @@ export const registDispenser = async (dispenserId: string, dispencerData:Dispens
   return response;
 };
 
+export type PatientType ={
+    patientId:number;
+    patientName:string;
+    patientProfileImage:string;
+    dispenserId:string;
+    dispenserStatus:string;
+    dispenserName:string;
+    dispenserModelName:string;
+
+}
+export type DispenserPatientType = {
+dispenserPatients:PatientType[]
+}
+
+export const getDispenserPatient = async (): Promise<DispenserPatientType> => {
+  const config: AxiosRequestConfig = {
+    url: `${process.env.NEXT_API}/dispenser/patient/all`,
+    method: 'get',
+  };
+
+  const data = await requestWithAuth<DispenserPatientType>(config);
+  return data;
+};
