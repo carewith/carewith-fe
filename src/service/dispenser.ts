@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from 'axios';
 import { requestWithAuth } from '.';
 
 export type Dispenser = {
-    id:string
+    dispenserId:string
 }
 
 export type DispenserData ={
@@ -18,7 +18,19 @@ export type DispenserListType = {
     count:number,
     dispensers:DispenserWithStatus[]
 }
+export type ProgressBar = {
+    percent:number;
+}
 
+export type AsdType= {
+    time:string;
+    incomplete:number;
+    complete:number;
+    expected:number;
+}
+export type DosePerTimes = {
+    dosePerTime :AsdType[]
+}
 
 export const getDispenserId = async (): Promise<Dispenser> => {
   const config: AxiosRequestConfig = {
@@ -39,6 +51,25 @@ export const getDispenserList = async (): Promise<DispenserListType> => {
   const data = await requestWithAuth<DispenserListType>(config);
   return data;
 };
+
+export const getProgressBar = async (dispenserId:string): Promise<ProgressBar> => {
+  const config: AxiosRequestConfig = {
+    url: `${process.env.NEXT_API}/dispenser/${dispenserId}/progress`,
+    method: 'get',
+  };
+  const data = await requestWithAuth<ProgressBar>(config);
+  return data;
+};
+
+export const getAsdPerTime = async (dispenserId:string): Promise<DosePerTimes> => {
+  const config: AxiosRequestConfig = {
+    url: `${process.env.NEXT_API}/dispenser/${dispenserId}/pertime`,
+    method: 'get',
+  };
+  const data = await requestWithAuth<DosePerTimes>(config);
+  return data;
+};
+
 
 export const getMainDispenser = async (): Promise<DispenserWithStatus> => {
   const config: AxiosRequestConfig = {

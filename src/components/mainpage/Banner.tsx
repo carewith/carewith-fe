@@ -1,6 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { getUserData, User } from "@/service/userService";
+import {
+  getProgressBar,
+  getAsdPerTime,
+  DosePerTimes,
+  getMainDispenser,
+  ProgressBar,
+} from "@/service/dispenser";
 import styled from "styled-components";
 
 const BannerContainer = styled.div`
@@ -11,10 +18,10 @@ const BannerContainer = styled.div`
   top: 0;
   left: 0;
   z-index: -10;
-  background: linear-gradient(to bottom left, #f0f3ff 0%, #cedeff 100%);
+  background: linear-gradient(to bottom left, #f0f3ff 0%, #6c94e3 100%);
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: center;
   align-items: start;
   padding: 2rem 1rem;
 `;
@@ -60,11 +67,10 @@ const ProgressBar = styled.div`
   display: flex;
 `;
 
-const ProgressSegment = styled.div<{ color: string; width: string }>`
+const ProgressSegment = styled.div<{ width: string }>`
   height: 100%;
-  background-color: ${({ color }) => color};
+  background-color: ${({ theme }) => theme.colors.primary.blue02};
   width: ${({ width }) => width};
-  border-right: 1px solid ${({ theme }) => theme.colors.grey.background};
 `;
 
 const TimeMarks = styled.div`
@@ -74,29 +80,28 @@ const TimeMarks = styled.div`
   margin-top: 0.5rem;
 `;
 
-const TimeMark = styled.div<{ color: string }>`
+const TimeMark = styled.div<{ isNext: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 14px;
-  color: ${({ color }) => color};
+  color: ${({ isNext, theme }) =>
+    isNext ? theme.colors.primary.blue02 : theme.colors.grey.grey02};
 
-  &.next {
-    color: ${({ theme }) => theme.colors.primary.blue02};
-
-    &::after {
-      content: "•";
-      color: ${({ theme }) => theme.colors.primary.blue02};
-      font-size: 24px;
-      margin-top: 4px;
-    }
+  &::after {
+    content: "•";
+    color: ${({ isNext, theme }) =>
+      isNext ? theme.colors.primary.blue02 : "transparent"};
+    font-size: 24px;
+    margin-top: 4px;
   }
 `;
 
-const PillCount = styled.div<{ color: string }>`
+const PillCount = styled.div<{ isNext: boolean }>`
   width: 20px;
   height: 20px;
-  background-color: ${({ color }) => color};
+  background-color: ${({ isNext, theme }) =>
+    isNext ? theme.colors.primary.blue02 : theme.colors.grey.grey02};
   color: white;
   font-size: 12px;
   display: flex;
@@ -108,16 +113,29 @@ const PillCount = styled.div<{ color: string }>`
 
 const Banner = () => {
   const [userData, setUserData] = useState<User | null>(null);
+  const [progress, setProgress] = useState<ProgressBar | null>(null);
+  const [dosePerTimes, setDosePerTimes] = useState<DosePerTimes | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getUserData();
-        setUserData(data);
-        console.log("Fetched user data:", data);
+        const userData = await getUserData();
+        console.log("USERDATA ", userData);
+        setUserData(userData);
+
+        const mainDispenser = await getMainDispenser();
+        console.log("MAINDISPENSER", mainDispenser);
+        if (mainDispenser && mainDispenser.dispenserId) {
+          const progressData = await getProgressBar(mainDispenser.id);
+          setProgress(progressData);
+
+          const doseTimesData = await getAsdPerTime(mainDispenser.id);
+          console.log("HI", doseTimesData);
+          setDosePerTimes(doseTimesData);
+        }
       } catch (error) {
-        console.error("Failed to fetch user data:", error);
+        console.error("Failed to fetch data:", error);
       } finally {
         setLoading(false);
       }
@@ -133,56 +151,41 @@ const Banner = () => {
     );
   }
 
-  const doses = [
-    { time: "오전 9:00", count: 1, status: "past" },
-    { time: "오후 1:00", count: 2, status: "past" },
-    { time: "오후 4:00", count: 4, status: "next" },
-    { time: "오후 7:00", count: 3, status: "future" },
-    { time: "오후 10:00", count: 2, status: "future" },
-  ];
+  const progressPercent =
+    progress && typeof progress.percent === "number" && !isNaN(progress.percent)
+      ? progress.percent
+      : typeof progress?.percent === "string" &&
+        !isNaN(parseFloat(progress.percent))
+      ? parseFloat(progress.percent)
+      : 0;
 
-  const getColor = (status: string) => {
-    switch (status) {
-      case "past":
-        return "#4CAF50";
-      case "next":
-        return "#5A81FA";
-      default:
-        return "#9EA9D1";
-    }
-  };
-
-  const nextDose = doses.find((dose) => dose.status === "next");
+  const doses = dosePerTimes?.dosePerTime || [];
+  const nextDose = doses.find((dose) => dose.incomplete > 0);
 
   return (
     <BannerContainer>
       <SmallText>건강을 지키는 작은 습관</SmallText>
       <MainText>
         {userData?.name}님의 복약 현황
-        <br /> <SubText></SubText>
+        <br /> <SubText>정확한 약 복용으로부터,</SubText>
       </MainText>
       {nextDose && <NextDoseText>다음 복용: {nextDose.time}</NextDoseText>}
       <ProgressContainer>
         <ProgressBar>
-          {doses.map((dose, index) => (
-            <ProgressSegment
-              key={index}
-              color={getColor(dose.status)}
-              width={`${100 / doses.length}%`}
-            />
-          ))}
+          <ProgressSegment width={`${progressPercent}%`} />
         </ProgressBar>
         <TimeMarks>
-          {doses.map((dose, index) => (
-            <TimeMark
-              key={index}
-              color={getColor(dose.status)}
-              className={dose.status === "next" ? "next" : ""}
-            >
-              {dose.time}
-              <PillCount color={getColor(dose.status)}>{dose.count}</PillCount>
-            </TimeMark>
-          ))}
+          {doses.map((dose, index) => {
+            const isNext = dose.incomplete > 0;
+            return (
+              <TimeMark key={index} isNext={isNext}>
+                {dose.time}
+                <PillCount isNext={isNext}>
+                  {dose.complete + dose.incomplete}
+                </PillCount>
+              </TimeMark>
+            );
+          })}
         </TimeMarks>
       </ProgressContainer>
     </BannerContainer>

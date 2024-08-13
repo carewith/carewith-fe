@@ -321,7 +321,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </MenuItemWithClose>
 
           <MenuCategory>기록</MenuCategory>
-          <MenuItemWithClose href="/dispenser">
+          <MenuItemWithClose href="/mypage/history">
             복약 기록
             <IoChevronForward />
           </MenuItemWithClose>
