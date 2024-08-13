@@ -39,7 +39,7 @@ const Title = styled.h2`
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2; // 최대 2줄까지 표시
+  -webkit-line-clamp: 1; // 최대 2줄까지 표시
   -webkit-box-orient: vertical;
   flex-shrink: 0;
 `;
