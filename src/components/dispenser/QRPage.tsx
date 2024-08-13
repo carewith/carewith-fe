@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { SettingHeader } from "../settingPage/SettingHeader";
 import { SettingWhiteContainer } from "../Container.styles";
 import Image from "next/image";

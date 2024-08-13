@@ -4,7 +4,7 @@ import { SettingHeader } from "@/components/settingPage/SettingHeader";
 import { useRouter } from "next/navigation";
 import { DispenserData, registDispenser } from "@/service/dispenser";
 import { IoChevronForward } from "react-icons/io5";
-import { SettingContainer } from "@/components/Container.styles";
+import { SettingWhiteContainer } from "@/components/Container.styles";
 import {
   ContentSection,
   Input,
@@ -12,7 +12,11 @@ import {
   Label,
   SelectButton,
   SubmitButton,
+  UnderlinedInput,
   VolumeSlider,
+  VolumeSliderBackground,
+  VolumeSliderContainer,
+  VolumeSliderFill,
 } from "@/components/dispenser/Regist.styles";
 
 type Props = {
@@ -20,6 +24,7 @@ type Props = {
     slug: string;
   };
 };
+
 function RegisterDispenser({ params: { slug } }: Props) {
   const router = useRouter();
 
@@ -46,14 +51,20 @@ function RegisterDispenser({ params: { slug } }: Props) {
   const handleSubmit = async () => {
     try {
       await registDispenser(dispenserId, dispenserData);
-      router.push("/mypage");
+      router.push(`/mypage/setting/dispenser/choice/regist/${slug}/complete`);
     } catch (error) {
       console.error("디스펜서 등록 실패:", error);
     }
   };
-
+  const isFormValid = () => {
+    return (
+      dispenserData.name.trim() !== "" &&
+      dispenserData.location.trim() !== "" &&
+      dispenserId.trim() !== ""
+    );
+  };
   return (
-    <SettingContainer>
+    <SettingWhiteContainer>
       <SettingHeader title="디스펜서 등록" />
       <ContentSection>
         <InputGroup>
@@ -66,12 +77,13 @@ function RegisterDispenser({ params: { slug } }: Props) {
           />
         </InputGroup>
         <InputGroup>
-          <Label>디스펜서 ID</Label>
-          <Input
+          <Label>모델명</Label>
+          <UnderlinedInput
             name="dispenserId"
             value={dispenserId}
             onChange={handleDispenserIdChange}
-            placeholder="@@@@@"
+            placeholder="모델명 자동 입력"
+            readOnly
           />
         </InputGroup>
         <InputGroup>
@@ -83,25 +95,27 @@ function RegisterDispenser({ params: { slug } }: Props) {
             placeholder="사용자 설정 이름"
           />
         </InputGroup>
-        <InputGroup>
-          <Label>알람음 설정</Label>
-          <SelectButton>
-            기본음 <IoChevronForward color="#CAD0E3" size={22} />
-          </SelectButton>
-        </InputGroup>
+
         <InputGroup>
           <Label>디스펜서 음량</Label>
-          <VolumeSlider
-            type="range"
-            min="0"
-            max="100"
-            value={dispenserData.volume}
-            onChange={handleVolumeChange}
-          />
+          <VolumeSliderContainer>
+            <VolumeSliderBackground />
+            <VolumeSliderFill width={dispenserData.volume} />
+            <VolumeSlider
+              type="range"
+              min="0"
+              max="100"
+              value={dispenserData.volume}
+              onChange={handleVolumeChange}
+            />
+          </VolumeSliderContainer>
         </InputGroup>
       </ContentSection>
-      <SubmitButton onClick={handleSubmit}>다음</SubmitButton>
-    </SettingContainer>
+      <SubmitButton onClick={handleSubmit} disabled={!isFormValid()}>
+        {" "}
+        완료
+      </SubmitButton>
+    </SettingWhiteContainer>
   );
 }
 

@@ -66,6 +66,15 @@ const LoadingSpinner = styled.div`
   }
 `;
 
+const DisplayBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 768px;
+`;
+
 export default function QrScanner() {
   const [data, setData] = useState<string>("조회된 데이터 없음");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -92,7 +101,7 @@ export default function QrScanner() {
   }, [isModalOpen, data, router]);
 
   return (
-    <div>
+    <DisplayBox>
       <QrReader
         onResult={(res: any, err: any) => {
           if (res) qrScan(res.getText());
@@ -105,7 +114,6 @@ export default function QrScanner() {
         <IconWrapper>
           <MdQrCodeScanner />
         </IconWrapper>
-        result : {data}
       </div>
 
       {isModalOpen && (
@@ -120,6 +128,6 @@ export default function QrScanner() {
           </ModalContent>
         </ModalOverlay>
       )}
-    </div>
+    </DisplayBox>
   );
 }

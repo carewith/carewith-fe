@@ -29,7 +29,7 @@ const Title = styled.h1`
 `;
 
 const Content = () => {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
