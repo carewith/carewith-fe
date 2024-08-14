@@ -6,12 +6,14 @@ import { FaChevronLeft } from "react-icons/fa6";
 import { usePathname, useRouter } from "next/navigation";
 import {
   FaRegCheckCircle,
+  FaRegBell,
   FaRegUserCircle,
   FaRegTrashAlt,
   FaPencilAlt,
 } from "react-icons/fa";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import Image from "next/image";
 import Sidebar from "./Sidebar";
 import { deleteCartridge } from "@/service/cartridge";
 
@@ -186,6 +188,10 @@ const Header = () => {
               />
             ) : (
               <>
+                <FaRegBell
+                  onClick={() => router.push("/mypage/setting/reminder")}
+                  size={24}
+                />
                 <FaRegUserCircle
                   onClick={() => router.push("/mypage")}
                   size={24}

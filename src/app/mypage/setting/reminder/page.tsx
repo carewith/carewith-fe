@@ -5,11 +5,22 @@ import { IoChevronForward, IoInformationCircleOutline } from "react-icons/io5";
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+import {
+  ModalButton,
+  ModalContent,
+  ModalHandle,
+  ModalOverlay,
+  ModalTitle,
+} from "@/components/mypage/myPage.styles";
 
 function ReminderPage() {
   const [alarmOn, setAlarmOn] = useState(true);
   const [takeAlarmOn, setTakeAlarmOn] = useState(false);
   const [missedAlarmOn, setMissedAlarmOn] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
   const router = useRouter();
   return (
     <SettingContainer>
@@ -42,7 +53,7 @@ function ReminderPage() {
         </SettingItem>
         <SettingItem>
           <div>알림음 설정</div>
-          <RightContent>
+          <RightContent onClick={toggleModal}>
             기본음
             <IoChevronForward color="#2c2d31" size={20} />
           </RightContent>
@@ -57,6 +68,15 @@ function ReminderPage() {
         </UnderlinedText>
         에서 변경할 수 있습니다.
       </BottomMessage>
+      {isModalOpen && (
+        <ModalOverlay onClick={toggleModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHandle />
+            <ModalTitle>준비중인 기능입니다</ModalTitle>
+            <ModalButton onClick={toggleModal}>확인</ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </SettingContainer>
   );
 }

@@ -358,12 +358,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             <IoChevronForward />
           </MenuItemWithClose>
 
-          <MenuCategory>기록</MenuCategory>
-          <MenuItemWithClose href="/mypage/history">
-            복약 기록
-            <IoChevronForward />
-          </MenuItemWithClose>
-
           <MenuCategory>마이페이지</MenuCategory>
           <MenuItemWithClose href="/mypage/setting/profile">
             계정 및 프로필 관리
