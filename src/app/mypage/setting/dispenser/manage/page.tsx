@@ -3,15 +3,32 @@ import styled from "styled-components";
 import { SettingHeader } from "@/components/settingPage/SettingHeader";
 import { IoChevronForward } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { DispenserWithStatus, getMainDispenser } from "@/service/dispenser";
 
 function ManageDispenser() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isCaution, setIsCaution] = useState(false);
+  const [mainDispenser, setMainDispenser] = useState<any>(null);
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  const toggleCaution = () => {
+    setIsCaution(!isCaution);
+  };
+  useEffect(() => {
+    const fetchDispenser = async () => {
+      try {
+        const response = await getMainDispenser();
+        setMainDispenser(response);
+      } catch (error) {
+        console.error("Dispenser not found:", error);
+      }
+    };
+    fetchDispenser();
+  }, []);
   return (
     <SettingContainer>
       <SettingHeader title="디스펜서 관리" />
@@ -20,35 +37,35 @@ function ManageDispenser() {
         <SettingItem onClick={toggleModal}>
           <div>
             <Label>디스펜서</Label>
-            <Value>사용자 지정 이름</Value>
+            <Value>{mainDispenser?.name || "디스펜서1"}</Value>
           </div>
           <IoChevronForward color="#CAD0E3" size={22} />
         </SettingItem>
         <SettingItem>
           <div>
-            <Label>모델명</Label>
-            <Value>모델명 표시</Value>
-          </div>
-        </SettingItem>
-        <SettingItem>
-          <div>
             <Label>디스펜서 일련번호</Label>
-            <Value>일련번호 표시</Value>
+            <Value>
+              {mainDispenser?.dispenserId ||
+                localStorage.getItem("dispenserId") ||
+                "MJeo0ld"}
+            </Value>
           </div>
           <CopyButton>복사</CopyButton>
         </SettingItem>
       </ContentSection>
       <SectionTitle>디스펜서 등록 및 전환</SectionTitle>
       <ContentSection>
-        <SettingItem>
+        <SettingItem onClick={toggleCaution}>
           복용 알림음
           <IoChevronForward color="#CAD0E3" size={22} />
         </SettingItem>
       </ContentSection>
       <DispenserInfoSection>
         <DispenserName>사용자 지정 이름</DispenserName>
-        <DispenserButton>디스펜서 선택</DispenserButton>
-        <DispenserButton outlined>디스펜서 삭제</DispenserButton>
+        <DispenserButton onClick={toggleCaution}>디스펜서 선택</DispenserButton>
+        <DispenserButton onClick={toggleCaution} outlined>
+          디스펜서 삭제
+        </DispenserButton>
       </DispenserInfoSection>
       <AddDispenserButton
         onClick={() => router.push("/mypage/setting/dispenser/choice")}
@@ -65,6 +82,15 @@ function ManageDispenser() {
               <Input type="text" placeholder="디스펜서명 입력" />
             </InputWrapper>
             <ModalButton>완료</ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+      {isCaution && (
+        <ModalOverlay onClick={toggleCaution}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHandle />
+            <ModalTitle>준비중인 기능입니다</ModalTitle>
+            <ModalButton onClick={toggleCaution}>확인</ModalButton>
           </ModalContent>
         </ModalOverlay>
       )}
