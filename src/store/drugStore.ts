@@ -30,7 +30,7 @@ export const useDrugStore = create<DrugStore>((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await axios.get(
-        `https://api.carewith.life/api/v1/drug/all/keyword?keyword=${keyword}`
+        `${process.env.NEXT_API}/drug/all/keyword?keyword=${keyword}`
       );
       const drugs = response.data.data.drugs;
       set({ drugs, loading: false });
