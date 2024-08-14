@@ -154,3 +154,63 @@ export const ToggleSwitchWrapper = styled.span`
     background-color: ${({ theme }) => theme.colors.primary.blue02};
   }
 `;
+
+export const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 1000;
+`;
+
+export const ModalContent = styled.div`
+  background-color: white;
+  width: 100%;
+  max-width: 768px;
+
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  padding: 20px;
+`;
+
+export const ModalHandle = styled.div`
+  width: 40px;
+  height: 4px;
+  background-color: ${({ theme }) => theme.colors.grey.grey03};
+  border-radius: 2px;
+  margin: 0 auto 20px;
+`;
+
+export const ModalTitle = styled.h3`
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+export const InputWrapper = styled.div`
+  margin-bottom: 20px;
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid ${({ theme }) => theme.colors.grey.grey03};
+  border-radius: 8px;
+  font-size: 16px;
+`;
+
+export const ModalButton = styled.button`
+  width: 100%;
+  padding: 12px;
+  background-color: ${({ theme }) => theme.colors.primary.blue02};
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+`;

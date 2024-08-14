@@ -21,6 +21,13 @@ import {
   Divider,
   InfoSectionRow,
   Container,
+  ModalOverlay,
+  ModalContent,
+  ModalHandle,
+  ModalTitle,
+  InputWrapper,
+  ModalButton,
+  Input,
 } from "@/components/mypage/myPage.styles";
 import { useRouter } from "next/navigation";
 
@@ -76,9 +83,11 @@ const ToggleSwitch = ({
 const MyPage = () => {
   const router = useRouter();
   const [isLargeText, setIsLargeText] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleToggleLargeText = () => setIsLargeText(!isLargeText);
-
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
   return (
     <Container>
       <ProfileSection>
@@ -113,10 +122,10 @@ const MyPage = () => {
       </NavigationMenu>
 
       <Section title="설정">
-        <SettingItem
-          text="계정 및 프로필 관리"
-          href="/mypage/setting/profile"
-        />
+        <SettingItemWrapper onClick={toggleModal}>
+          {"계정 및 프로필 관리"}
+          <IoChevronForward color="#CAD0E3" size={20} />
+        </SettingItemWrapper>
         <SettingItem text="기기 관리" href="/mypage/setting/dispenser/manage" />
         <SettingItem text="알림 설정" href="/mypage/setting/reminder" />
         <InfoSectionRow>
@@ -135,6 +144,15 @@ const MyPage = () => {
         <SettingItem text="이용약관" href="/mypage/setting/conditions" />
         <SettingItem text="고객센터" href="/mypage/setting/cs" />
       </Section>
+      {isModalOpen && (
+        <ModalOverlay onClick={toggleModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHandle />
+            <ModalTitle>준비중인 기능입니다</ModalTitle>
+            <ModalButton onClick={toggleModal}>확인</ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </Container>
   );
 };
