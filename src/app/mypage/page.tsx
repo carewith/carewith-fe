@@ -22,15 +22,18 @@ import {
   InfoSectionRow,
   Container,
 } from "@/components/mypage/myPage.styles";
+import { useRouter } from "next/navigation";
 
 const NavItem = ({
   icon: Icon,
   text,
+  onClick,
 }: {
   icon: React.ElementType;
   text: string;
+  onClick?: () => void;
 }) => (
-  <NavItemWrapper>
+  <NavItemWrapper onClick={onClick}>
     <Icon size={24} />
     <NavText>{text}</NavText>
   </NavItemWrapper>
@@ -71,6 +74,7 @@ const ToggleSwitch = ({
 );
 
 const MyPage = () => {
+  const router = useRouter();
   const [isLargeText, setIsLargeText] = useState(false);
 
   const handleToggleLargeText = () => setIsLargeText(!isLargeText);
@@ -89,11 +93,23 @@ const MyPage = () => {
       </ProfileSection>
 
       <NavigationMenu>
-        <NavItem icon={FaArrowsRotate} text="디스펜서 전환" />
+        <NavItem
+          icon={FaArrowsRotate}
+          text="디스펜서 전환"
+          onClick={() => router.push("/home")}
+        />
         <Divider />
-        <NavItem icon={IoWalletOutline} text="구독 관리" />
+        <NavItem
+          icon={IoWalletOutline}
+          text="구독 관리"
+          onClick={() => router.push("/mypage/setting/billing")}
+        />
         <Divider />
-        <NavItem icon={IoHeadset} text="고객센터" />
+        <NavItem
+          icon={IoHeadset}
+          text="고객센터"
+          onClick={() => router.push("/mypage/setting/cs")}
+        />
       </NavigationMenu>
 
       <Section title="설정">
