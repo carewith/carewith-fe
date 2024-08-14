@@ -9,6 +9,7 @@ export type DispenserData ={
     name:string;
     location:string;
     volume:number;
+    dispenserId:string;
 }
 export type DispenserWithStatus = Dispenser & {
     status: string;
