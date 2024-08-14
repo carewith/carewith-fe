@@ -197,7 +197,7 @@ const Header = () => {
               <>
                 <FaRegBell size={24} />
                 <FaRegUserCircle
-                  onClick={() => router.push("/login")}
+                  onClick={() => router.push("/mypage")}
                   size={24}
                 />
               </>
