@@ -6,14 +6,12 @@ import { FaChevronLeft } from "react-icons/fa6";
 import { usePathname, useRouter } from "next/navigation";
 import {
   FaRegCheckCircle,
-  FaRegBell,
   FaRegUserCircle,
   FaRegTrashAlt,
   FaPencilAlt,
 } from "react-icons/fa";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import Image from "next/image";
 import Sidebar from "./Sidebar";
 import { deleteCartridge } from "@/service/cartridge";
 
@@ -174,13 +172,6 @@ const Header = () => {
           )}
 
           {!isEditPath && (
-            // <Image
-            //   src={"/images/Carewith_logo.png"}
-            //   alt="logo"
-            //   width={30}
-            //   height={30}
-            //   onClick={() => router.push("/home")}
-            // />
             <LogoText id="logo" onClick={() => router.push("/home")}>
               Carewith
             </LogoText>
@@ -195,7 +186,6 @@ const Header = () => {
               />
             ) : (
               <>
-                <FaRegBell size={24} />
                 <FaRegUserCircle
                   onClick={() => router.push("/mypage")}
                   size={24}
