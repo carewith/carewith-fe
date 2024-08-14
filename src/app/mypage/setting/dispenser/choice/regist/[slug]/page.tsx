@@ -28,7 +28,7 @@ type Props = {
 function RegisterDispenser({ params: { slug } }: Props) {
   const router = useRouter();
 
-  const [dispenserData, setDispenserData] = useState<DispenserData>({
+  const [dispenserData, setDispenserData] = useState<any>({
     name: "",
     location: "",
     volume: 50,

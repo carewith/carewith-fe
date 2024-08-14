@@ -44,11 +44,7 @@ function ManageDispenser() {
         <SettingItem>
           <div>
             <Label>디스펜서 일련번호</Label>
-            <Value>
-              {mainDispenser?.dispenserId ||
-                localStorage.getItem("dispenserId") ||
-                "MJeo0ld"}
-            </Value>
+            <Value>{mainDispenser?.dispenserId || "MJeo0ld"}</Value>
           </div>
           <CopyButton>복사</CopyButton>
         </SettingItem>
