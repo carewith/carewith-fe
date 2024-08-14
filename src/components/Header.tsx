@@ -174,13 +174,6 @@ const Header = () => {
           )}
 
           {!isEditPath && (
-            // <Image
-            //   src={"/images/Carewith_logo.png"}
-            //   alt="logo"
-            //   width={30}
-            //   height={30}
-            //   onClick={() => router.push("/home")}
-            // />
             <LogoText id="logo" onClick={() => router.push("/home")}>
               Carewith
             </LogoText>
@@ -195,7 +188,10 @@ const Header = () => {
               />
             ) : (
               <>
-                <FaRegBell size={24} />
+                <FaRegBell
+                  onClick={() => router.push("/mypage/setting/reminder")}
+                  size={24}
+                />
                 <FaRegUserCircle
                   onClick={() => router.push("/mypage")}
                   size={24}
