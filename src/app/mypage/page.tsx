@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { IoChevronForward, IoHeadset, IoWalletOutline } from "react-icons/io5";
 import { FaArrowsRotate } from "react-icons/fa6";
@@ -30,6 +30,7 @@ import {
   Input,
 } from "@/components/mypage/myPage.styles";
 import { useRouter } from "next/navigation";
+import { getUserData, User } from "@/service/userService";
 
 const NavItem = ({
   icon: Icon,
@@ -88,16 +89,35 @@ const MyPage = () => {
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  const [userData, setUserData] = useState<User | null>(null);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await getUserData();
+        setUserData(data);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <Container>
       <ProfileSection>
         <ProfileInfo>
-          <ProfileImage src="/images/profile.png" alt="프로필 사진" />
+          <ProfileImage
+            src={userData?.profileImage || "/images/profile.png"}
+            alt="프로필 사진"
+          />
           <div>
-            <UserName>아이디</UserName>
-            <UserContact>연락처</UserContact>
+            <UserName>{userData?.name || "사용자"}</UserName>
           </div>
-          <EditProfileButton>프로필 수정</EditProfileButton>
+          <EditProfileButton onClick={toggleModal}>
+            프로필 수정
+          </EditProfileButton>
         </ProfileInfo>
       </ProfileSection>
 

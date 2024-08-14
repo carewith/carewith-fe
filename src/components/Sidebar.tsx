@@ -250,10 +250,10 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-  const [userData, setUserData] = useState<User | null>(null);
   const [patientData, setPatientData] = useState<PatientType | null>(null);
   const router = useRouter();
 
+  const [userData, setUserData] = useState<User | null>(null);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
