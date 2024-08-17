@@ -9,7 +9,17 @@ import {
   IoWalletOutline,
   IoHeadset,
 } from "react-icons/io5";
-import { Divider, NavItemWrapper, NavText } from "./mypage/myPage.styles";
+import {
+  Divider,
+  ModalButton,
+  ModalContent,
+  ModalHandle,
+  ModalOverlay,
+  ModalTitle,
+  NavItemWrapper,
+  NavText,
+  SettingItemWrapper,
+} from "./mypage/myPage.styles";
 
 import { FaArrowsRotate } from "react-icons/fa6";
 import { getUserData, User } from "@/service/userService";
@@ -30,11 +40,13 @@ const slideIn = keyframes`
 const NavItem = ({
   icon: Icon,
   text,
+  onClick,
 }: {
   icon: React.ElementType;
   text: string;
+  onClick?: () => void;
 }) => (
-  <NavItemWrapper>
+  <NavItemWrapper onClick={onClick}>
     <Icon size={24} />
     <NavText>{text}</NavText>
   </NavItemWrapper>
@@ -252,6 +264,10 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const [patientData, setPatientData] = useState<PatientType | null>(null);
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
 
   const [userData, setUserData] = useState<User | null>(null);
   useEffect(() => {
@@ -322,11 +338,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </ProfileInfo>
 
           <NavigationWrapper>
-            <NavItem icon={FaArrowsRotate} text="디스펜서 전환" />
+            <NavItem
+              icon={FaArrowsRotate}
+              text="디스펜서 전환"
+              onClick={() => router.push("/home")}
+            />
             <Divider />
-            <NavItem icon={IoWalletOutline} text="구독 관리" />
+            <NavItem
+              icon={IoWalletOutline}
+              text="구독 관리"
+              onClick={() => router.push("/mypage/setting/billing")}
+            />
             <Divider />
-            <NavItem icon={IoHeadset} text="고객센터" />
+            <NavItem
+              icon={IoHeadset}
+              text="고객센터"
+              onClick={() => router.push("/mypage/setting/cs")}
+            />
           </NavigationWrapper>
         </ProfileSection>
         <MenuSection>
@@ -359,10 +387,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </MenuItemWithClose>
 
           <MenuCategory>마이페이지</MenuCategory>
-          <MenuItemWithClose href="/mypage/setting/profile">
-            계정 및 프로필 관리
-            <IoChevronForward />
-          </MenuItemWithClose>
+          <SettingItemWrapper onClick={toggleModal}>
+            {"계정 및 프로필 관리"}
+            <IoChevronForward color="#CAD0E3" size={20} />
+          </SettingItemWrapper>
           <MenuItemWithClose href="/mypage/setting/dispenser/manage">
             디스펜서 관리
             <IoChevronForward />
@@ -389,6 +417,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </MenuItemWithClose>
         </MenuSection>
       </SidebarContainer>
+      {isModalOpen && (
+        <ModalOverlay onClick={toggleModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHandle />
+            <ModalTitle>준비중인 기능입니다</ModalTitle>
+            <ModalButton onClick={toggleModal}>확인</ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </SidebarOverlay>
   );
 };
