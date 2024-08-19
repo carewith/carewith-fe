@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   const code = searchParams.get('code');
 
   if (!code) {
-    return NextResponse.redirect('/login');
+    return NextResponse.redirect('/');
   }
 
   const response = await fetch(`https://api.carewith.life/api/v1/auth/kakao?code=${code}`, {
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   });
 
   if (!response.ok) {
-    return NextResponse.redirect('/login');
+    return NextResponse.redirect('/');
   }
 
   const data = await response.json();

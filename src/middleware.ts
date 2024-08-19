@@ -7,7 +7,6 @@ export function middleware(request: NextRequest) {
   if (url.pathname === '/home') {
     const accessToken = url.searchParams.get('accessToken');
     const refreshToken = url.searchParams.get('refreshToken');
-
     if (accessToken && refreshToken) {
       const response = NextResponse.next();
       
